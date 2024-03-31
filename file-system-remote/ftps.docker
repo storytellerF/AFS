@@ -1,0 +1,6 @@
+docker run --rm -d --name ftps \
+            -p 2121:21 \
+            -p 50000-50009:50000-50009 \
+            -e "FTP_USER=myuser" \
+            -e "FTP_PWD=mypassword" \
+            pcavezzan/ftpsdev

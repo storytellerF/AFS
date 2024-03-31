@@ -1,0 +1,23 @@
+# sardine-android
+-dontwarn javax.el.BeanELResolver
+-dontwarn javax.el.ELContext
+-dontwarn javax.el.ELResolver
+-dontwarn javax.el.ExpressionFactory
+-dontwarn javax.el.FunctionMapper
+-dontwarn javax.el.ValueExpression
+-dontwarn javax.el.VariableMapper
+-dontwarn org.ietf.jgss.GSSContext
+-dontwarn org.ietf.jgss.GSSCredential
+-dontwarn org.ietf.jgss.GSSException
+-dontwarn org.ietf.jgss.GSSManager
+-dontwarn org.ietf.jgss.GSSName
+-dontwarn org.ietf.jgss.Oid
+-dontwarn org.simpleframework.xml.Serializer
+-dontwarn org.simpleframework.xml.convert.Registry
+-dontwarn org.simpleframework.xml.convert.RegistryStrategy
+-dontwarn org.simpleframework.xml.core.Persister
+-dontwarn org.simpleframework.xml.strategy.Strategy
+
+-dontwarn org.xmlpull.v1.**
+-keep class org.xmlpull.v1.** { *; }
+-dontwarn android.content.res.XmlResourceParser

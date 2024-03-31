@@ -1,0 +1,1 @@
+sh gradlew clean -xtest -xlint assemble publishToMavenLocal

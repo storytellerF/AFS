@@ -1,0 +1,5 @@
+docker run --rm -d --name samba \
+            -p 1445:445 \
+            -e "USER=myuser" \
+            -e "PASS=mypassword" \
+            dockurr/samba

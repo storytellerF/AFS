@@ -1,0 +1,4 @@
+docker run --rm -d --name sftp \
+            -p 1022:22 \
+            atmoz/sftp \
+            myuser:mypassword:::upload

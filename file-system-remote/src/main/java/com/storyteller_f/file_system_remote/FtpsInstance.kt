@@ -96,7 +96,7 @@ class FtpsFileInstance(uri: Uri, private val spec: RemoteSpec = RemoteSpec.parse
         TODO("Not yet implemented")
     }
 
-    override suspend fun rename(newName: String): Boolean {
+    override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
     }
 

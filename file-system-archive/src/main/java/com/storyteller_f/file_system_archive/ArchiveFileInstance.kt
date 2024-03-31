@@ -209,7 +209,7 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
         TODO("Not yet implemented")
     }
 
-    override suspend fun rename(newName: String): Boolean {
+    override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
     }
 }

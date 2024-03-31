@@ -22,7 +22,7 @@ import java.io.FileOutputStream
 /**
  * 预定义的用于无法访问的中间目录，不能标识一个文件类型
  */
-class FakeLocalFileInstance(val context: Context, uri: Uri) :
+open class FakeLocalFileInstance(val context: Context, uri: Uri) :
     ForbidChangeLocalFileInstance(uri) {
     private val myId = context.getMyId()
 
@@ -135,5 +135,11 @@ class FakeLocalFileInstance(val context: Context, uri: Uri) :
         )
 
         val symLink = listOf("bin", "sdcard", "etc")
+    }
+
+    private fun child(it: String): Pair<File, Uri> {
+        val file = File(path, it)
+        val child = uri.buildUpon().path(file.absolutePath).build()
+        return Pair(file, child)
     }
 }

@@ -132,10 +132,10 @@ abstract class FileInstance(val uri: Uri) {
      * 重命名当前文件
      *
      * @param newName 新的文件名，不包含路径
-     * @return 返回是否重命名成功
+     * @return 返回新的FileInstance
      */
     @WorkerThread
-    abstract suspend fun rename(newName: String): Boolean
+    abstract suspend fun rename(newName: String): FileInstance?
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -152,13 +152,11 @@ abstract class FileInstance(val uri: Uri) {
 
     private fun buildDirectoryContainer(): MutableList<FileInfo> = mutableListOf()
 
-    protected fun child(it: String): Pair<File, Uri> {
-        val file = File(path, it)
-        val child = uri.buildUpon().path(file.absolutePath).build()
-        return Pair(file, child)
-    }
-
     protected fun childUri(name: String): Uri {
         return uri.buildUpon().appendPath(name).build()
+    }
+
+    protected fun overridePath(newPath: String): Uri {
+        return uri.buildUpon().path(newPath).build()
     }
 }

@@ -135,7 +135,7 @@ class SmbFileInstance(uri: Uri, private val shareSpec: ShareSpec = ShareSpec.par
         TODO("Not yet implemented")
     }
 
-    override suspend fun rename(newName: String): Boolean {
+    override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
     }
 

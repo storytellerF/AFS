@@ -99,7 +99,9 @@ class HttpFileInstance(context: Context, uri: Uri) : BaseContextFileInstance(con
 
     override suspend fun deleteFileOrEmptyDirectory() = false
 
-    override suspend fun rename(newName: String) = false
+    override suspend fun rename(newName: String): FileInstance? {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun toParent(): FileInstance {
         TODO("Not yet implemented")

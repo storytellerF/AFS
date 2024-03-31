@@ -61,7 +61,7 @@ class AppLocalFileInstance(context: Context, uri: Uri) : BaseContextFileInstance
         TODO("Not yet implemented")
     }
 
-    override suspend fun rename(newName: String): Boolean {
+    override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
     }
 

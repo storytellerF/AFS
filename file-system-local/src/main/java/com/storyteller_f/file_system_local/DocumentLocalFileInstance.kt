@@ -295,8 +295,16 @@ class DocumentLocalFileInstance(
         return relinkIfNeed()?.exists() ?: false
     }
 
-    override suspend fun rename(newName: String): Boolean {
-        return relinkIfNeed()!!.renameTo(newName)
+    override suspend fun rename(newName: String): FileInstance? {
+        val relinkIfNeed = relinkIfNeed()!!
+        val newPath = buildPath(parentPath(path)!!, newName)
+        val renameResult = relinkIfNeed.renameTo(newName)
+        val newUri = overridePath(newPath)
+        return if (renameResult) {
+            DocumentLocalFileInstance(prefix, preferenceKey, tree, context, newUri)
+        } else {
+            null
+        }
     }
 
     @SuppressLint("Recycle")

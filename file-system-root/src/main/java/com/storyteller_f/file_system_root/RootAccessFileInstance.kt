@@ -72,7 +72,7 @@ class RootAccessFileInstance(private val remote: FileSystemManager, uri: Uri) : 
 
     override suspend fun deleteFileOrEmptyDirectory(): Boolean = extendedFile.delete()
 
-    override suspend fun rename(newName: String): Boolean {
+    override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
     }
 

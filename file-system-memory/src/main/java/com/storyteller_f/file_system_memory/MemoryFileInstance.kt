@@ -34,8 +34,10 @@ import kotlin.io.path.isReadable
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.isSymbolicLink
 import kotlin.io.path.isWritable
+import kotlin.io.path.moveTo
 import kotlin.io.path.name
 import kotlin.io.path.outputStream
+import kotlin.io.path.pathString
 import kotlin.io.path.readAttributes
 
 abstract class PathsFileInstance(uri: Uri) : FileInstance(uri) {
@@ -130,7 +132,7 @@ abstract class PathsFileInstance(uri: Uri) : FileInstance(uri) {
     }
 
     override suspend fun toParent(): FileInstance {
-        TODO("Not yet implemented")
+        return MemoryFileInstance(uri.buildUpon().path(nioPath.parent.pathString).build())
     }
 
     override suspend fun deleteFileOrEmptyDirectory(): Boolean {
@@ -139,8 +141,10 @@ abstract class PathsFileInstance(uri: Uri) : FileInstance(uri) {
         }.isSuccess
     }
 
-    override suspend fun rename(newName: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun rename(newName: String): FileInstance? {
+        val newPath = nioPath.parent.resolve(newName)
+        nioPath.moveTo(newPath)
+        return MemoryFileInstance(overridePath(newPath.pathString))
     }
 }
 

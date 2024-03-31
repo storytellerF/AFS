@@ -7,11 +7,13 @@ import androidx.annotation.WorkerThread
 import com.storyteller_f.file_system.getExtension
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileCreatePolicy.*
+import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.instance.FileKind
 import com.storyteller_f.file_system.instance.FilePermission
 import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
+import com.storyteller_f.file_system.parentPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -146,8 +148,14 @@ class RegularLocalFileInstance(context: Context, uri: Uri) : LocalFileInstance(c
         return innerFile.delete()
     }
 
-    override suspend fun rename(newName: String): Boolean {
-        return innerFile.renameTo(File(newName))
+    override suspend fun rename(newName: String): FileInstance? {
+        val file = File(parentPath(path), newName)
+        val renameResult = innerFile.renameTo(file)
+        return if (renameResult) {
+            RegularLocalFileInstance(context, getUri(file))
+        } else {
+            null
+        }
     }
 
     override suspend fun toParent(): LocalFileInstance {

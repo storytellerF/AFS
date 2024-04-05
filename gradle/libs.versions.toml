@@ -10,7 +10,6 @@ junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
 kotlinxCoroutinesCore = "1.8.0"
-kotlinxCoroutinesCoreVersion = "1.8.1-Beta"
 libsuVersion = "5.0.3"
 logbackAndroid = "3.0.0"
 material = "1.11.0"
@@ -37,7 +36,6 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
-kotlinx-coroutines-core-v181beta = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }

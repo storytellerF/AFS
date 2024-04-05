@@ -34,7 +34,7 @@ implModule(":slim-ktx")
 implModule(":compat-ktx")
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.kotlinx.coroutines.core.v181beta)
+    implementation(libs.kotlinx.coroutines.core)
 
     unitTestDependency()
 }

@@ -39,7 +39,8 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":file-system"))
+    implementation(project(":file-system-local"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

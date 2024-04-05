@@ -26,16 +26,15 @@ android {
             isIncludeAndroidResources = true
         }
     }
-    
+
 }
 baseLibrary(true)
+implModule(":common-ktx")
+implModule(":slim-ktx")
+implModule(":compat-ktx")
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implModule(":common-ktx")
-    implModule(":slim-ktx")
-    implModule(":compat-ktx")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.coroutines.core.v181beta)
 
     unitTestDependency()
 }

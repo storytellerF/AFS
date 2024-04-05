@@ -4,11 +4,10 @@ import android.content.Context
 import android.net.Uri
 import com.storyteller_f.file_system.FileInstanceFactory
 import com.storyteller_f.file_system.FileSystemPrefix
-import com.storyteller_f.file_system.decodeByBase64
 import com.storyteller_f.file_system.encodeByBase64
 import com.storyteller_f.file_system.instance.FileInstance
 
-data class ArchiveFileSystemPrefix(val key: String) : FileSystemPrefix
+data object ArchiveFileSystemPrefix : FileSystemPrefix
 
 class ArchiveFileInstanceFactory : FileInstanceFactory {
     override val schemes: List<String>
@@ -22,8 +21,12 @@ class ArchiveFileInstanceFactory : FileInstanceFactory {
         }
     }
 
-    override fun getPrefix(context: Context, uri: Uri): FileSystemPrefix {
-        return ArchiveFileSystemPrefix(uri.pathSegments.first().decodeByBase64())
+    override fun getPrefix(context: Context, uri: Uri): FileSystemPrefix? {
+        return if (schemes.contains(uri.scheme)) {
+            ArchiveFileSystemPrefix
+        } else {
+            null
+        }
     }
 
     override fun buildNestedFile(context: Context, name: String, fileInstance: FileInstance): Uri? {

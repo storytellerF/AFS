@@ -23,9 +23,9 @@ android {
     
 }
 
+implModule(":file-system")
 dependencies {
-    implModule(":file-system")
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(libs.androidx.core.ktx)
     androidTestImplModule(":file-system-local")
     unitTestDependency()
 }

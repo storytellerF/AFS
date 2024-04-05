@@ -115,27 +115,25 @@ class RegularLocalFileInstance(context: Context, uri: Uri) : LocalFileInstance(c
     public override suspend fun listInternal(
         fileSystemPack: FileSystemPack
     ) {
-        val listFiles = innerFile.listFiles() // 获取子文件
-        if (listFiles != null) {
-            for (childFile in listFiles) {
-                val childUri = childUri(childFile.name)
-                val permissions = childFile.permissions()
-                val fileTime = childFile.fileTime()
-                val kind = childFile.fileKind1()
-                val name = childFile.name
+        val listFiles = innerFile.listFiles().orEmpty() // 获取子文件
+        for (childFile in listFiles) {
+            val childUri = childUri(childFile.name)
+            val permissions = childFile.permissions()
+            val fileTime = childFile.fileTime()
+            val kind = childFile.fileKind1()
+            val name = childFile.name
 
-                val info = FileInfo(
-                    name,
-                    childUri,
-                    fileTime,
-                    kind,
-                    permissions
-                )
-                if (childFile.isDirectory) {
-                    fileSystemPack.addDirectory(info)
-                } else {
-                    fileSystemPack.addFile(info)
-                }
+            val info = FileInfo(
+                name,
+                childUri,
+                fileTime,
+                kind,
+                permissions
+            )
+            if (childFile.isDirectory) {
+                fileSystemPack.addDirectory(info)
+            } else {
+                fileSystemPack.addFile(info)
             }
         }
     }

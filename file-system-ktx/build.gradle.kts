@@ -21,9 +21,9 @@ android {
     
 }
 baseLibrary()
+apiModule(":file-system")
 dependencies {
-    apiModule(":file-system")
-    implementation("com.j256.simplemagic:simplemagic:1.17")
+    implementation(libs.simplemagic)
     unitTestDependency()
 }
 constraintCommonUIListVersion(versionManager)

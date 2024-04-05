@@ -20,8 +20,7 @@ android {
 baseLibrary()
 
 dependencies {
-    val libsuVersion = "5.0.3"
-    implementation("com.github.topjohnwu.libsu:nio:${libsuVersion}")
+    implementation(libs.nio)
 
     unitTestDependency()
     implModule(":file-system")

@@ -25,10 +25,10 @@ android {
 
 baseLibrary(true)
 
+implModule(":file-system")
+implModule(":slim-ktx")
+implModule(":compat-ktx")
 dependencies {
-    implModule(":file-system")
-    implModule(":slim-ktx")
-    implModule(":compat-ktx")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

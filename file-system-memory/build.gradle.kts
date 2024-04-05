@@ -29,12 +29,12 @@ configurations.all {
         select("com.google.guava:guava:0")
     }
 }
+implModule(":file-system")
 dependencies {
-    implModule(":file-system")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("com.google.jimfs:jimfs:1.3.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.jimfs)
     unitTestDependency()
 }
 constraintCommonUIListVersion(versionManager)

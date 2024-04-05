@@ -11,5 +11,8 @@ target_file="${destination_dir}/pre-commit"
 
 [ -f "$target_file" ] && cp "$target_file" "$destination_file"
 cp .commit/pre-commit.template "$target_file"
-xattr -d com.apple.provenance "$target_file"
+if [[ "$(uname)" == "Darwin" ]]; then
+    xattr -d com.apple.provenance "$target_file"
+fi
+
 chmod +x "$target_file"

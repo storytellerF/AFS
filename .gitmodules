@@ -1,0 +1,6 @@
+[submodule ".commit"]
+	path = .commit
+	url = https://github.com/storytellerF/.commit.git
+[submodule ".commit-hooks"]
+	path = .commit-hooks
+	url = https://github.com/storytellerF/.commit-hooks.git

@@ -53,8 +53,8 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun fileKind(): FileKind {
-        return readCurrentFileData {
-            it.fileKind1()
+        return readCurrentFileData { entry, _ ->
+            entry.fileKind1()
         }!!
     }
 
@@ -84,7 +84,7 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun getInputStream(): InputStream {
-        return readCurrentFileData(false) {
+        return readCurrentFileData(false) { _, _ ->
             ZipWrapInputStream(this)
         }!!
     }
@@ -93,9 +93,12 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
         return super.getOutputStream()
     }
 
+    /**
+     * @param filter 第二个参数是entryName，以/ 开头，不会以/ 结束
+     */
     private suspend fun readEntry(
         closeStream: Boolean = true,
-        filter: ZipInputStream.(ZipEntry) -> Boolean
+        filter: ZipInputStream.(ZipEntry, entryName: String) -> Boolean
     ) {
         reconnectIfNeed().let {
             val zipInputStream = ZipInputStream(it.getInputStream())
@@ -111,24 +114,27 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
 
     private fun process(
         zipInputStream: ZipInputStream,
-        filter: ZipInputStream.(ZipEntry) -> Boolean
+        filter: ZipInputStream.(ZipEntry, String) -> Boolean
     ) {
-        zipInputStream.nextEntry?.let { zipEntry ->
-            val p = "/${zipEntry.name}"
-            if (p.startsWith(path) && zipInputStream.filter(zipEntry)) {
-                return
-            }
-            zipInputStream.closeEntry() // filter 中可能并没有读取，手动关闭
+        while (true) {
+            zipInputStream.nextEntry?.let { zipEntry ->
+                val name1 = zipEntry.name.removeSuffix("/")
+                val p = "/$name1"
+                if (p.startsWith(path) && zipInputStream.filter(zipEntry, p)) {
+                    return
+                }
+                zipInputStream.closeEntry() // filter 中可能并没有读取，手动关闭
+            } ?: break
         }
     }
 
     private suspend fun <R> readEntryData(
         closeStream: Boolean = true,
-        block: ZipInputStream.(ZipEntry) -> R?
+        block: ZipInputStream.(ZipEntry, String) -> R?
     ): R? {
         var result: R? = null
-        readEntry(closeStream) {
-            val block1 = block(it)
+        readEntry(closeStream) { entry, entryName ->
+            val block1 = block(entry, entryName)
             if (block1 != null) {
                 result = block1
                 true
@@ -141,12 +147,11 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
 
     private suspend fun <R> readCurrentFileData(
         closeStream: Boolean = true,
-        block: ZipInputStream.(ZipEntry) -> R?
+        block: ZipInputStream.(ZipEntry, entryName: String) -> R?
     ): R? {
-        return readEntryData(closeStream) {
-            val p = "/${it.name}"
-            if (p == path) {
-                block(it)
+        return readEntryData(closeStream) { entry, entryName ->
+            if (entryName == path) {
+                block(entry, entryName)
             } else {
                 null
             }
@@ -156,30 +161,42 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     override suspend fun listInternal(
         fileSystemPack: FileSystemPack
     ) {
-        readEntry { zipEntry ->
-            val childUri = childUri(zipEntry.name)
-            val fileTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                FileTime(
-                    zipEntry.lastModifiedTime?.toMillis(),
-                    zipEntry.lastAccessTime?.toMillis(),
-                    zipEntry.creationTime?.toMillis()
-                )
-            } else {
-                FileTime(zipEntry.time)
+        readEntry { zipEntry, entryPath ->
+            if (entryPath != path) {
+                // entryPath 可能的结果/data /data/text.h /data/test/test.h
+                val entryRelativePath =
+                    if (path != "/") {
+                        entryPath.substringAfter("$path/")
+                    } else {
+                        entryPath.substringAfter(path)
+                    }
+                if (entryRelativePath.isNotEmpty() && !entryRelativePath.contains("/")) {
+                    val childUri = childUri(entryRelativePath)
+                    val fileTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        FileTime(
+                            zipEntry.lastModifiedTime?.toMillis(),
+                            zipEntry.lastAccessTime?.toMillis(),
+                            zipEntry.creationTime?.toMillis()
+                        )
+                    } else {
+                        FileTime(zipEntry.time)
+                    }
+                    val kind = zipEntry.fileKind1()
+                    val info = FileInfo(
+                        entryRelativePath,
+                        childUri,
+                        fileTime,
+                        kind,
+                        FilePermissions.USER_READABLE,
+                    )
+                    if (zipEntry.isDirectory) {
+                        fileSystemPack.addDirectory(info)
+                    } else {
+                        fileSystemPack.addFile(info)
+                    }
+                }
             }
-            val kind = zipEntry.fileKind1()
-            val info = FileInfo(
-                zipEntry.name,
-                childUri,
-                fileTime,
-                kind,
-                FilePermissions.USER_READABLE,
-            )
-            if (zipEntry.isDirectory) {
-                fileSystemPack.addDirectory(info)
-            } else {
-                fileSystemPack.addFile(info)
-            }
+
             false
         }
     }
@@ -211,5 +228,9 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
 
     override suspend fun rename(newName: String): FileInstance? {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val SCHEME = "archive"
     }
 }

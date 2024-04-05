@@ -15,7 +15,7 @@ interface FileInstanceFactory {
 
     fun getPrefix(context: Context, uri: Uri): FileSystemPrefix? = null
 
-    fun buildNestedFile(context: Context, name: String, fileInstance: FileInstance): Uri? = null
+    fun buildNestedFile(context: Context, name: String?, fileInstance: FileInstance): Uri? = null
 }
 
 @Suppress("unused")

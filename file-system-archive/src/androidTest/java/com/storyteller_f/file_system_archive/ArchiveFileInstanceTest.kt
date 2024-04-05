@@ -35,12 +35,7 @@ class ArchiveFileInstanceTest {
                 it.closeEntry()
             }
 
-            val archiveFileInstanceUri = Uri.Builder()
-                .scheme("archive")
-                .authority(Uri.fromFile(file).toString().encodeByBase64())
-                .path("/")
-                .build()
-            val archiveFileInstance = getFileInstance(appContext, archiveFileInstanceUri)!!
+            val archiveFileInstance = getFileInstance(appContext, ArchiveFileInstanceFactory.buildNestedFile(Uri.fromFile(file), null)!!)!!
             val list = archiveFileInstance.list()
             assertEquals("hello.txt", list.files.first().name)
 
@@ -101,6 +96,40 @@ class ArchiveFileInstanceTest {
             assertEquals("hello.txt", textFileInstance.name)
         }
 
+    }
+
+    @Test
+    fun testMultiEntry() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+        runBlocking {
+            val zipFile = File(appContext.filesDir, "test.zip").ensureFile()!!
+            ZipOutputStream(zipFile.outputStream()).use {
+                it.putNextEntry(ZipEntry("hello.txt"))
+                it.write("hello".toByteArray())
+                it.closeEntry()
+                it.putNextEntry(ZipEntry("hello/"))
+                it.closeEntry()
+                it.putNextEntry(ZipEntry("hello/text.html"))
+                it.closeEntry()
+                it.putNextEntry(ZipEntry("hello/world/"))
+                it.closeEntry()
+            }
+
+            val zipUri = Uri.fromFile(zipFile)
+            val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, null)!!
+            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            val pack = fileInstance.list()
+            assertEquals(2, pack.count)
+            assertEquals("/hello.txt", pack.files.first().fullPath)
+            assertEquals("/hello", pack.directories.first().fullPath)
+            //test toChild
+            val child = fileInstance.toChild("hello", FileCreatePolicy.NotCreate)!!
+            val childPack = child.list()
+            assertEquals(2, childPack.count)
+            assertEquals("/hello/text.html", childPack.files.first().fullPath)
+            assertEquals("/hello/world", childPack.directories.first().fullPath)
+        }
     }
 }
 

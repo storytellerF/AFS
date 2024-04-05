@@ -17,7 +17,7 @@ import com.storyteller_f.file_system_local.MainActivity.Companion.putBundle
 import kotlinx.coroutines.CompletableDeferred
 
 /**
- * @return 返回是否含有权限。对于没有权限的，调用 requestPermissionForSpecialPath
+ * @return 返回是否含有权限。对于没有权限的，调用 requestFilePermission
  */
 suspend fun Context.checkFilePermission(uri: Uri): Boolean {
     if (uri.scheme != ContentResolver.SCHEME_FILE) return true

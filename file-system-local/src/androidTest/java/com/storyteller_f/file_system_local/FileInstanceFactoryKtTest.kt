@@ -21,11 +21,13 @@ class FileInstanceFactoryKtTest {
                 LocalFileSystem.CURRENT_EMULATED_PATH to LocalFileSystem.CURRENT_EMULATED_PATH,
                 "/storage/self/primary" to "/storage/self/primary",
                 LocalFileSystem.ROOT_USER_EMULATED_PATH to LocalFileSystem.ROOT_USER_EMULATED_PATH,
+                "${LocalFileSystem.ROOT_USER_EMULATED_PATH}/Downloads" to LocalFileSystem.ROOT_USER_EMULATED_PATH,
                 "/storage/XX44-XX55/Downloads" to "/storage/XX44-XX55",
                 "/storage/XX44-XX55" to "/storage/XX44-XX55",
                 LocalFileSystem.STORAGE_PATH to "/storage"
             ).forEach { (path, expected) ->
-                val prefix = getFileSystemPrefix(appContext, File(path).toUri()) as LocalFileSystemPrefix
+                val prefix =
+                    getFileSystemPrefix(appContext, File(path).toUri()) as LocalFileSystemPrefix
                 assertEquals(expected, prefix.key)
             }
         }

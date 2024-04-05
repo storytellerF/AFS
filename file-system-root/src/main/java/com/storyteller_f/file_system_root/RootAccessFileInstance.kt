@@ -108,6 +108,11 @@ class RootAccessFileInstance(private val remote: FileSystemManager, uri: Uri) : 
             libSuManager = manager
         }
 
+        @Suppress("unused")
+        fun removeLibSuRemote() {
+            libSuManager = null
+        }
+
         fun buildInstance(uri: Uri): RootAccessFileInstance? {
             val r = libSuManager ?: return null
             return RootAccessFileInstance(r, uri)

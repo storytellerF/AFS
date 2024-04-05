@@ -1,2 +1,0 @@
-#!/bin/sh
-sh .commit/pre-commit.sh

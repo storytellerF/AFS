@@ -15,10 +15,6 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system_ktx"
-    defaultConfig {
-        minSdk = 21
-    }
-    
 }
 baseLibrary()
 apiModule(":file-system")

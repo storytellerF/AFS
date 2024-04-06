@@ -11,11 +11,6 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system_root"
-
-    defaultConfig {
-        minSdk = 21
-    }
-    
 }
 baseLibrary()
 

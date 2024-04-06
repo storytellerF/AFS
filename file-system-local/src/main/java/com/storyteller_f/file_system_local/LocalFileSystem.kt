@@ -17,7 +17,6 @@ import com.storyteller_f.file_system_local.LocalFileSystem.USER_DATA_FRONT_PATH
 import com.storyteller_f.file_system_local.LocalFileSystem.USER_EMULATED_FRONT_PATH
 import com.storyteller_f.file_system_local.fake.AppLocalFileInstance
 import com.storyteller_f.file_system_local.fake.FakeLocalFileInstance
-import com.storyteller_f.slim_ktx.substringAt
 
 object LocalFileSystem {
     const val ROOT = "/"
@@ -141,7 +140,7 @@ fun getLocalFileSystemPrefix(context: Context, path: String): LocalFileSystemPre
         path.startsWith(USER_EMULATED_FRONT_PATH) -> LocalFileSystemPrefix.SelfEmulated(
             path.substring(
                 USER_EMULATED_FRONT_PATH.length
-            ).substringAt("/").toLong()
+            ).substringBefore("/").toLong()
         )
 
         path == LocalFileSystem.CURRENT_EMULATED_PATH -> LocalFileSystemPrefix.Self

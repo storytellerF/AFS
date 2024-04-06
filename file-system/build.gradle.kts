@@ -17,9 +17,6 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system"
-    defaultConfig {
-        minSdk = 16
-    }
 
     testOptions {
         unitTests {
@@ -29,6 +26,12 @@ android {
 
 }
 baseLibrary(true)
+//fixme common-ktx minSdk
+//android {
+//    defaultConfig {
+//        minSdk = 16
+//    }
+//}
 implModule(":common-ktx")
 implModule(":slim-ktx")
 implModule(":compat-ktx")

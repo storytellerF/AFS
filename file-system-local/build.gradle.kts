@@ -15,14 +15,15 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system_local"
-
-    defaultConfig {
-        minSdk = 16
-    }
-    
 }
 
 baseLibrary(true)
+//fixme compat-ktx minSdk
+//android {
+//    defaultConfig {
+//        minSdk = 16
+//    }
+//}
 
 implModule(":file-system")
 implModule(":slim-ktx")

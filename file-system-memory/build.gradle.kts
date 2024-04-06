@@ -15,15 +15,15 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system_memory"
+}
 
+baseLibrary()
+android {
     defaultConfig {
         //todo 解决java.nio.Path 的问题
         minSdk = 26
     }
-    
 }
-
-baseLibrary()
 configurations.all {
     resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
         select("com.google.guava:guava:0")

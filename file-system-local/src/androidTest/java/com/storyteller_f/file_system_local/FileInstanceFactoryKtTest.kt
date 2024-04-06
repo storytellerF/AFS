@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.getFileSystemPrefix
+import com.storyteller_f.file_system_local.LocalFileSystem.USER_EMULATED_FRONT_PATH
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -32,6 +33,18 @@ class FileInstanceFactoryKtTest {
             }
         }
 
+    }
+
+    @Test
+    fun testId() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        runBlocking {
+            val prefix = getLocalFileSystemPrefix(
+                appContext,
+                "${USER_EMULATED_FRONT_PATH}10"
+            ) as LocalFileSystemPrefix.SelfEmulated
+            assertEquals(10L, prefix.uid)
+        }
     }
 
     @Test

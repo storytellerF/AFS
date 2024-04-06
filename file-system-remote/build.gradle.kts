@@ -15,11 +15,6 @@ plugins {
 
 android {
     namespace = "com.storyteller_f.file_system_remote"
-
-    defaultConfig {
-        minSdk = 21
-    }
-    
 }
 baseLibrary()
 configurations.all {

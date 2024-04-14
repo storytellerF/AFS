@@ -159,4 +159,9 @@ abstract class FileInstance(val uri: Uri) {
     protected fun overridePath(newPath: String): Uri {
         return uri.buildUpon().path(newPath).build()
     }
+
+    protected fun parentUri(): Uri {
+        val parentPath = parentPath(path)!!
+        return overridePath(parentPath)
+    }
 }

@@ -3,7 +3,6 @@ package com.storyteller_f.file_system_archive
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.storyteller_f.file_system.encodeByBase64
 import com.storyteller_f.file_system.ensureFile
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.instance.FileCreatePolicy
@@ -28,14 +27,13 @@ class ArchiveFileInstanceTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         runBlocking {
-            val file = File(appContext.filesDir, "test.zip").ensureFile()!!
-            ZipOutputStream(file.outputStream()).use {
-                it.putNextEntry(ZipEntry("hello.txt"))
-                it.write("hello".toByteArray())
-                it.closeEntry()
-            }
+            val file =
+                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
 
-            val archiveFileInstance = getFileInstance(appContext, ArchiveFileInstanceFactory.buildNestedFile(Uri.fromFile(file), null)!!)!!
+            val archiveFileInstance = getFileInstance(
+                appContext,
+                ArchiveFileInstanceFactory.buildNestedFile(Uri.fromFile(file), null)!!
+            )!!
             val list = archiveFileInstance.list()
             assertEquals("hello.txt", list.files.first().name)
 
@@ -55,12 +53,8 @@ class ArchiveFileInstanceTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         runBlocking {
-            val zipFile = File(appContext.filesDir, "test.zip").ensureFile()!!
-            ZipOutputStream(zipFile.outputStream()).use {
-                it.putNextEntry(ZipEntry("hello.txt"))
-                it.write("hello".toByteArray())
-                it.closeEntry()
-            }
+            val zipFile =
+                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
 
             val fileInstance = getFileInstance(appContext, Uri.fromFile(zipFile))!!
             val instance = fileInstance.toChildEfficiently(appContext, "hello.txt")
@@ -74,12 +68,8 @@ class ArchiveFileInstanceTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         runBlocking {
-            val zipFile = File(appContext.filesDir, "test.zip").ensureFile()!!
-            ZipOutputStream(zipFile.outputStream()).use {
-                it.putNextEntry(ZipEntry("hello.txt"))
-                it.write("hello".toByteArray())
-                it.closeEntry()
-            }
+            val zipFile =
+                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
 
             val parentZip = File(appContext.filesDir, "parent.zip").ensureFile()!!
             ZipOutputStream(parentZip.outputStream()).use {
@@ -103,18 +93,18 @@ class ArchiveFileInstanceTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         runBlocking {
-            val zipFile = File(appContext.filesDir, "test.zip").ensureFile()!!
-            ZipOutputStream(zipFile.outputStream()).use {
-                it.putNextEntry(ZipEntry("hello.txt"))
-                it.write("hello".toByteArray())
-                it.closeEntry()
-                it.putNextEntry(ZipEntry("hello/"))
-                it.closeEntry()
-                it.putNextEntry(ZipEntry("hello/text.html"))
-                it.closeEntry()
-                it.putNextEntry(ZipEntry("hello/world/"))
-                it.closeEntry()
-            }
+            val zipFile = appContext.buildZip(
+                listOf(
+                    Node("hello.txt", emptyList(), "hello"),
+                    Node(
+                        "hello", listOf(
+                            Node("text.html", emptyList(), ""),
+                            Node("world", emptyList())
+                        )
+                    )
+                ),
+                "test.zip"
+            )
 
             val zipUri = Uri.fromFile(zipFile)
             val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, null)!!
@@ -129,6 +119,51 @@ class ArchiveFileInstanceTest {
             assertEquals(2, childPack.count)
             assertEquals("/hello/text.html", childPack.files.first().fullPath)
             assertEquals("/hello/world", childPack.directories.first().fullPath)
+        }
+    }
+
+    @Test
+    fun testParent() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+        runBlocking {
+            val zipFile = appContext.buildZip(
+                listOf(
+                    Node("hello.txt", emptyList(), "hello"),
+                    Node(
+                        "hello", listOf(
+                            Node("text.html", emptyList(), ""),
+                            Node("world", emptyList())
+                        )
+                    )
+                ),
+                "test.zip"
+            )
+
+            val zipUri = Uri.fromFile(zipFile)
+            val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, "/hello/world")!!
+            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            val parentInstance = fileInstance.toParent()
+            assertEquals("hello", parentInstance.name)
+        }
+    }
+
+    @Test
+    fun testExists() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+        runBlocking {
+            val zipFile = appContext.buildZip(
+                listOf(
+                    Node("hello.txt", emptyList(), "hello"),
+                ),
+                "test.zip"
+            )
+
+            val zipUri = Uri.fromFile(zipFile)
+            val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, "/hello")!!
+            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            assertEquals(false, fileInstance.exists())
         }
     }
 }

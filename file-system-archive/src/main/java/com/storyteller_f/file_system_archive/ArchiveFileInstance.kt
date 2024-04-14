@@ -2,10 +2,8 @@ package com.storyteller_f.file_system_archive
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.core.net.toUri
 import com.storyteller_f.file_system.decodeByBase64
-import com.storyteller_f.file_system.getExtension
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.instance.BaseContextFileInstance
 import com.storyteller_f.file_system.instance.FileCreatePolicy
@@ -45,28 +43,19 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun filePermissions(): FilePermissions {
-        TODO("Not yet implemented")
+        return FilePermissions.USER_READABLE
     }
 
     override suspend fun fileTime(): FileTime {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun fileKind(): FileKind {
-        return readCurrentFileData { entry, _ ->
-            entry.fileKind1()
+        return readCurrentFileData {
+            it.fileTime()
         }!!
     }
 
-    private fun ZipEntry.fileKind1(): FileKind {
-        val size = size
-        return FileKind.build(
-            !isDirectory,
-            isSymbolicLink = false,
-            isHidden = false,
-            size = size,
-            extension = getExtension(name).orEmpty()
-        )
+    override suspend fun fileKind(): FileKind {
+        return readCurrentFileData {
+            it.fileKind()
+        }!!
     }
 
     override suspend fun getFileInputStream(): FileInputStream {
@@ -84,7 +73,7 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun getInputStream(): InputStream {
-        return readCurrentFileData(false) { _, _ ->
+        return readCurrentFileData(false) {
             ZipWrapInputStream(this)
         }!!
     }
@@ -147,11 +136,11 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
 
     private suspend fun <R> readCurrentFileData(
         closeStream: Boolean = true,
-        block: ZipInputStream.(ZipEntry, entryName: String) -> R?
+        block: ZipInputStream.(ZipEntry) -> R?
     ): R? {
         return readEntryData(closeStream) { entry, entryName ->
             if (entryName == path) {
-                block(entry, entryName)
+                block(entry)
             } else {
                 null
             }
@@ -171,17 +160,9 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
                         entryPath.substringAfter(path)
                     }
                 if (entryRelativePath.isNotEmpty() && !entryRelativePath.contains("/")) {
+                    val fileTime = zipEntry.fileTime()
                     val childUri = childUri(entryRelativePath)
-                    val fileTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        FileTime(
-                            zipEntry.lastModifiedTime?.toMillis(),
-                            zipEntry.lastAccessTime?.toMillis(),
-                            zipEntry.creationTime?.toMillis()
-                        )
-                    } else {
-                        FileTime(zipEntry.time)
-                    }
-                    val kind = zipEntry.fileKind1()
+                    val kind = zipEntry.fileKind()
                     val info = FileInfo(
                         entryRelativePath,
                         childUri,
@@ -202,7 +183,9 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun exists(): Boolean {
-        TODO("Not yet implemented")
+        return readCurrentFileData {
+            true
+        } == true
     }
 
     override suspend fun createFile(): Boolean {
@@ -219,7 +202,7 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     }
 
     override suspend fun toParent(): FileInstance {
-        TODO("Not yet implemented")
+        return ArchiveFileInstance(context, parentUri())
     }
 
     override suspend fun deleteFileOrEmptyDirectory(): Boolean {

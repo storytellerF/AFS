@@ -18,7 +18,7 @@ buildscript {
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false
+    alias(libs.plugins.googleKsp) apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
     id("org.jetbrains.kotlinx.kover") version "0.7.4"
     id("com.starter.easylauncher") version ("6.2.0") apply false
@@ -72,8 +72,11 @@ fun Project.setupDetekt() {
         dependencies {
             val detektVersion = "1.23.1"
 
+            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
+            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-libraries:$detektVersion")
+            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors:$detektVersion")
         }
         tasks.withType<Detekt>().configureEach {

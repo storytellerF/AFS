@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_remote
+package com.storyteller_f.file_system_remote.instance
 
 import android.net.Uri
 import com.storyteller_f.file_system.getExtension
@@ -9,6 +9,7 @@ import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.instance.FileTime
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
+import com.storyteller_f.file_system_remote.RemoteSpec
 import com.thegrizzlylabs.sardineandroid.DavAcl
 import com.thegrizzlylabs.sardineandroid.DavResource
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine

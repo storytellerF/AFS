@@ -9,10 +9,9 @@ import com.storyteller_f.file_system.FileSystemPrefix
 import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.rawTree
 import com.storyteller_f.file_system.tree
+import com.storyteller_f.file_system_local.instance.DocumentLocalFileInstance
 
 class LocalFileInstanceFactory : FileInstanceFactory {
-    override val schemes: List<String>
-        get() = listOf(ContentResolver.SCHEME_FILE)
 
     override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
         return if (schemes.contains(uri.scheme!!)) {
@@ -24,11 +23,13 @@ class LocalFileInstanceFactory : FileInstanceFactory {
 
     override fun getPrefix(context: Context, uri: Uri): FileSystemPrefix =
         getLocalFileSystemPrefix(context, uri.path!!)
+
+    companion object {
+        val schemes = listOf(ContentResolver.SCHEME_FILE)
+    }
 }
 
 class DocumentFileInstanceFactory : FileInstanceFactory {
-    override val schemes: List<String>
-        get() = listOf(ContentResolver.SCHEME_CONTENT)
 
     override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
         return if (schemes.contains(uri.scheme)) {
@@ -46,5 +47,9 @@ class DocumentFileInstanceFactory : FileInstanceFactory {
         } else {
             null
         }
+    }
+
+    companion object {
+        val schemes = listOf(ContentResolver.SCHEME_CONTENT)
     }
 }

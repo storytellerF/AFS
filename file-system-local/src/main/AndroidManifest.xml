@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.storyteller_f.file_system_local.MainActivity"
+            android:name="com.storyteller_f.file_system_local.permission.MainActivity"
             android:exported="false" />
     </application>
 

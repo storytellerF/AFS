@@ -1,7 +1,7 @@
 package com.storyteller_f.file_system_remote.docker_test
 
 import com.storyteller_f.file_system.getFileInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.RemoteSpec
 import com.storyteller_f.file_system_remote.checkWebDavConnection
 import kotlinx.coroutines.runBlocking
@@ -22,7 +22,7 @@ class WebDavDockerTest {
 
         Assume.assumeTrue("未安装 ionelmc/webdav", isDockerContainerRunning("webdav"))
         val remoteSpec =
-            RemoteSpec("localhost", 7000, "myuser", "mypassword", RemoteAccessType.WEB_DAV)
+            RemoteSpec("localhost", 7000, "myuser", "mypassword", RemoteSchemes.WEB_DAV)
         remoteSpec.checkWebDavConnection()
         val uri = remoteSpec.toUri()
         runBlocking {

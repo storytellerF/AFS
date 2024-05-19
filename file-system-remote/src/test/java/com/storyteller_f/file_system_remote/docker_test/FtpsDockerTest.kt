@@ -1,7 +1,7 @@
 package com.storyteller_f.file_system_remote.docker_test
 
 import com.storyteller_f.file_system.getFileInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.RemoteSpec
 import com.storyteller_f.file_system_remote.checkFtpsConnection
 import kotlinx.coroutines.runBlocking
@@ -22,7 +22,7 @@ class FtpsDockerTest {
 
         Assume.assumeTrue("未安装 pcavezzan/ftpsdev", isDockerContainerRunning("ftps"))
         val remoteSpec =
-            RemoteSpec("localhost", 2121, "myuser", "mypassword", RemoteAccessType.FTP_ES)
+            RemoteSpec("localhost", 2121, "myuser", "mypassword", RemoteSchemes.FTP_ES)
         remoteSpec.checkFtpsConnection()
         val uri = remoteSpec.toUri()
         runBlocking {

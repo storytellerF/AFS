@@ -11,6 +11,8 @@ sealed class SymbolicLinkType(open val origin: String) {
 sealed class FileKind(open val linkType: SymbolicLinkType? = null, open val isHidden: Boolean) {
 
     /**
+     *
+     * @param size 单位是字节
      * @param extension 不可为null，默认是空字符串。由文件名提供的extension，并非文件本身确实是此类型。比如一个jpeg 图片，但是当前没有后缀名，extension 依然是空。
      */
     data class File(

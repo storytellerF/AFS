@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local
+package com.storyteller_f.file_system_local.permission
 
 import android.Manifest
 import android.content.ContentResolver
@@ -13,7 +13,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.storyteller_f.file_system.getFileSystemPrefix
-import com.storyteller_f.file_system_local.MainActivity.Companion.putBundle
+import com.storyteller_f.file_system_local.LocalFileSystemPaths
+import com.storyteller_f.file_system_local.LocalFileSystemPrefix
+import com.storyteller_f.file_system_local.instance.DocumentLocalFileInstance
+import com.storyteller_f.file_system_local.permission.MainActivity.Companion.putBundle
 import kotlinx.coroutines.CompletableDeferred
 
 /**
@@ -59,7 +62,7 @@ suspend fun Context.requestFilePermission(uri: Uri): Boolean {
     val path = uri.path!!
     val task = CompletableDeferred<Boolean>()
     when {
-        path.startsWith(LocalFileSystem.USER_EMULATED_FRONT_PATH) -> {
+        path.startsWith(LocalFileSystemPaths.USER_EMULATED_FRONT_PATH) -> {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
                     requestManageExternalPermission(task)
@@ -68,7 +71,7 @@ suspend fun Context.requestFilePermission(uri: Uri): Boolean {
                 else -> requestWriteExternalStorage(task)
             }
         }
-        path.startsWith(LocalFileSystem.STORAGE_PATH) -> {
+        path.startsWith(LocalFileSystemPaths.STORAGE_PATH) -> {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
                     requestManageExternalPermission(task)

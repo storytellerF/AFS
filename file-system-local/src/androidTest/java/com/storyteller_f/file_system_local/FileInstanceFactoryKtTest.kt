@@ -5,7 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.getFileSystemPrefix
-import com.storyteller_f.file_system_local.LocalFileSystem.USER_EMULATED_FRONT_PATH
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.USER_EMULATED_FRONT_PATH
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -19,13 +19,13 @@ class FileInstanceFactoryKtTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         runBlocking {
             listOf(
-                LocalFileSystem.CURRENT_EMULATED_PATH to LocalFileSystem.CURRENT_EMULATED_PATH,
+                LocalFileSystemPaths.CURRENT_EMULATED_PATH to LocalFileSystemPaths.CURRENT_EMULATED_PATH,
                 "/storage/self/primary" to "/storage/self/primary",
-                LocalFileSystem.ROOT_USER_EMULATED_PATH to LocalFileSystem.ROOT_USER_EMULATED_PATH,
-                "${LocalFileSystem.ROOT_USER_EMULATED_PATH}/Downloads" to LocalFileSystem.ROOT_USER_EMULATED_PATH,
+                LocalFileSystemPaths.ROOT_USER_EMULATED_PATH to LocalFileSystemPaths.ROOT_USER_EMULATED_PATH,
+                "${LocalFileSystemPaths.ROOT_USER_EMULATED_PATH}/Downloads" to LocalFileSystemPaths.ROOT_USER_EMULATED_PATH,
                 "/storage/XX44-XX55/Downloads" to "/storage/XX44-XX55",
                 "/storage/XX44-XX55" to "/storage/XX44-XX55",
-                LocalFileSystem.STORAGE_PATH to "/storage"
+                LocalFileSystemPaths.STORAGE_PATH to "/storage"
             ).forEach { (path, expected) ->
                 val prefix =
                     getFileSystemPrefix(appContext, File(path).toUri()) as LocalFileSystemPrefix

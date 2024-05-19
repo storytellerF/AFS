@@ -23,6 +23,8 @@ configurations.all {
     }
 }
 dependencies {
+    // https://mvnrepository.com/artifact/androidx.annotation/annotation
+    implementation(libs.androidx.annotation)
     implModule(":common-ktx")
     implModule(":slim-ktx")
     implModule(":file-system")

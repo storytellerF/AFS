@@ -1,0 +1,6 @@
+com.storyteller_f.file_system_remote.FtpFileSystemProvider
+com.storyteller_f.file_system_remote.FtpsFileSystemProvider
+com.storyteller_f.file_system_remote.HttpFileSystemProvider
+com.storyteller_f.file_system_remote.SFtpFileSystemProvider
+com.storyteller_f.file_system_remote.SmbFileSystemProvider
+com.storyteller_f.file_system_remote.WebDavFileSystemProvider

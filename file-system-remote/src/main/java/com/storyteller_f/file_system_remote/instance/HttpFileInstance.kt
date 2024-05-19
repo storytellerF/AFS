@@ -1,11 +1,9 @@
-package com.storyteller_f.file_system_remote
+package com.storyteller_f.file_system_remote.instance
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.webkit.URLUtil
 import com.storyteller_f.file_system.ensureFile
-import com.storyteller_f.file_system.instance.BaseContextFileInstance
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.instance.FileKind
@@ -22,11 +20,12 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
 
-class HttpFileInstance(context: Context, uri: Uri) : BaseContextFileInstance(context, uri) {
+class HttpFileInstance(uri: Uri) : FileInstance(uri) {
     /**
      * 保存到cache 目录
      */
     private lateinit var tempFile: File
+    private val cacheDir = System.getProperty("java.io.tmpdir")
 
     init {
         assert(uri.scheme == "http" || uri.scheme == "https")
@@ -62,7 +61,7 @@ class HttpFileInstance(context: Context, uri: Uri) : BaseContextFileInstance(con
         val guessFileName =
             URLUtil.guessFileName(uri.toString(), contentDisposition, contentType)
         return File(
-            context.cacheDir,
+            cacheDir,
             "${System.currentTimeMillis()}/$guessFileName"
         )
     }

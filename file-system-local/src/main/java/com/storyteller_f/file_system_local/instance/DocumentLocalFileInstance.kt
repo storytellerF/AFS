@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local
+package com.storyteller_f.file_system_local.instance
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -22,6 +22,8 @@ import com.storyteller_f.file_system.instance.FileTime
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
 import com.storyteller_f.file_system.parentPath
+import com.storyteller_f.file_system_local.FileSystemUriStore
+import com.storyteller_f.file_system_local.permissions
 import kotlinx.coroutines.yield
 import java.io.FileInputStream
 import java.io.FileNotFoundException

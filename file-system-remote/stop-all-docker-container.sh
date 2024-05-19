@@ -1,0 +1,1 @@
+docker ps -aq --filter "name=afs-test.*" | xargs docker stop

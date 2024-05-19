@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_remote
+package com.storyteller_f.file_system_remote.instance
 
 import android.net.Uri
 import com.hierynomus.msdtyp.AccessMask
@@ -20,6 +20,7 @@ import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.instance.FileTime
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
+import com.storyteller_f.file_system_remote.ShareSpec
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream

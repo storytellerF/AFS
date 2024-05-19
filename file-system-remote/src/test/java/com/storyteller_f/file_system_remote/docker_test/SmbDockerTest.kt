@@ -1,7 +1,7 @@
 package com.storyteller_f.file_system_remote.docker_test
 
 import com.storyteller_f.file_system.getFileInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.ShareSpec
 import com.storyteller_f.file_system_remote.checkSmbConnection
 import kotlinx.coroutines.runBlocking
@@ -22,7 +22,7 @@ class SmbDockerTest {
 
         Assume.assumeTrue("未安装 dockurr/samba", isDockerContainerRunning("samba"))
         val remoteSpec =
-            ShareSpec("localhost", 1445, "myuser", "mypassword", RemoteAccessType.SMB, "Data")
+            ShareSpec("localhost", 1445, "myuser", "mypassword", RemoteSchemes.SMB, "Data")
         remoteSpec.checkSmbConnection()
         val uri = remoteSpec.toUri()
         runBlocking {

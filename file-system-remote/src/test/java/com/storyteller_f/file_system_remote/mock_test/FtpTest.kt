@@ -1,10 +1,10 @@
 package com.storyteller_f.file_system_remote.mock_test
 
-import com.storyteller_f.file_system_remote.FtpFileInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.RemoteSpec
 import com.storyteller_f.file_system_remote.checkFtpConnection
 import com.storyteller_f.file_system_remote.getRemoteInstance
+import com.storyteller_f.file_system_remote.instance.FtpFileInstance
 import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
 import org.junit.Assert.assertEquals
@@ -29,7 +29,7 @@ class FtpTest {
         const val USERNAME = "user"
         const val PASSWORD = "password"
         const val SERVER = "localhost"
-        const val SCHEME = RemoteAccessType.FTP
+        const val SCHEME = RemoteSchemes.FTP
 
         @JvmStatic
         @BeforeClass

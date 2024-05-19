@@ -1,5 +1,11 @@
 package com.storyteller_f.file_system_remote
 
+import com.storyteller_f.file_system_remote.instance.FtpInstance
+import com.storyteller_f.file_system_remote.instance.FtpsInstance
+import com.storyteller_f.file_system_remote.instance.SFtpInstance
+import com.storyteller_f.file_system_remote.instance.SmbInstance
+import com.storyteller_f.file_system_remote.instance.WebDavInstance
+
 fun RemoteSpec.checkSFtpConnection() {
     SFtpInstance(this)
 }

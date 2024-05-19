@@ -7,10 +7,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
+import com.storyteller_f.file_system_local.permission.checkFilePermission
+import com.storyteller_f.file_system_local.permission.requestFilePermission
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
@@ -31,7 +31,7 @@ class PermissionRequestTest {
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.Q, maxSdkVersion = Build.VERSION_CODES.Q)
     @Test
     fun testRequestFilePermission() {
-        val uri = File(LocalFileSystem.ROOT_USER_EMULATED_PATH).toUri()
+        val uri = File(LocalFileSystemPaths.ROOT_USER_EMULATED_PATH).toUri()
 
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         mActivityRule.scenario.onActivity {

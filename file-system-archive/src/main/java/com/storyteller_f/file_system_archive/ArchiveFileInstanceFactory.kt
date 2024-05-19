@@ -10,8 +10,6 @@ import com.storyteller_f.file_system.instance.FileInstance
 data object ArchiveFileSystemPrefix : FileSystemPrefix
 
 class ArchiveFileInstanceFactory : FileInstanceFactory {
-    override val schemes: List<String>
-        get() = listOf(ArchiveFileInstance.SCHEME)
 
     override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
         return if (schemes.contains(uri.scheme)) {
@@ -47,5 +45,7 @@ class ArchiveFileInstanceFactory : FileInstanceFactory {
                 .path(name ?: "/")
                 .build()
         }
+
+        val schemes = listOf(ArchiveFileInstance.SCHEME)
     }
 }

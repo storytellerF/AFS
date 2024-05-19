@@ -15,17 +15,17 @@ import com.hierynomus.smbj.share.File
 import com.storyteller_f.file_system.buildPath
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
-import com.storyteller_f.file_system_remote.FtpsInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.RemoteSpec
-import com.storyteller_f.file_system_remote.SFtpInstance
 import com.storyteller_f.file_system_remote.ShareSpec
-import com.storyteller_f.file_system_remote.SmbInstance
-import com.storyteller_f.file_system_remote.WebDavInstance
-import com.storyteller_f.file_system_remote.ftpsClients
-import com.storyteller_f.file_system_remote.sftpChannels
-import com.storyteller_f.file_system_remote.smbSessions
-import com.storyteller_f.file_system_remote.webdavInstances
+import com.storyteller_f.file_system_remote.instance.FtpsInstance
+import com.storyteller_f.file_system_remote.instance.SFtpInstance
+import com.storyteller_f.file_system_remote.instance.SmbInstance
+import com.storyteller_f.file_system_remote.instance.WebDavInstance
+import com.storyteller_f.file_system_remote.instance.ftpsClients
+import com.storyteller_f.file_system_remote.instance.sftpChannels
+import com.storyteller_f.file_system_remote.instance.smbSessions
+import com.storyteller_f.file_system_remote.instance.webdavInstances
 import com.thegrizzlylabs.sardineandroid.DavAce
 import com.thegrizzlylabs.sardineandroid.DavAcl
 import com.thegrizzlylabs.sardineandroid.DavResource
@@ -89,14 +89,14 @@ class MockRemoteFileSystemRule(
 object MockRemoteFileSystem {
     private var fs: FileSystem? = null
 
-    val smbSpec = ShareSpec("localhost", 0, "test", "test", RemoteAccessType.SMB, "test1")
+    val smbSpec = ShareSpec("localhost", 0, "test", "test", RemoteSchemes.SMB, "test1")
 
-    val sftpSpec = RemoteSpec("localhost", 0, "test", "test", RemoteAccessType.SFTP)
+    val sftpSpec = RemoteSpec("localhost", 0, "test", "test", RemoteSchemes.SFTP)
 
-    val ftpsSpec = RemoteSpec("localhost", 0, "test", "test", RemoteAccessType.FTPS)
+    val ftpsSpec = RemoteSpec("localhost", 0, "test", "test", RemoteSchemes.FTPS)
 
     val webDavSpec =
-        RemoteSpec("localhost", 0, "test", "test", type = RemoteAccessType.WEB_DAV)
+        RemoteSpec("localhost", 0, "test", "test", type = RemoteSchemes.WEB_DAV)
 
     fun setup(type: String) {
         val newFileSystem = Jimfs.newFileSystem(Configuration.unix())
@@ -112,10 +112,10 @@ object MockRemoteFileSystem {
         }
 
         when (type) {
-            RemoteAccessType.SMB -> bindSmbSession()
-            RemoteAccessType.SFTP -> bindSFtpSession()
-            RemoteAccessType.FTPS -> bindFtpsSession()
-            RemoteAccessType.WEB_DAV -> bindWebDavSession(webDavSpec)
+            RemoteSchemes.SMB -> bindSmbSession()
+            RemoteSchemes.SFTP -> bindSFtpSession()
+            RemoteSchemes.FTPS -> bindFtpsSession()
+            RemoteSchemes.WEB_DAV -> bindWebDavSession(webDavSpec)
         }
     }
 

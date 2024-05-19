@@ -1,7 +1,7 @@
 package com.storyteller_f.file_system_remote.docker_test
 
 import com.storyteller_f.file_system.getFileInstance
-import com.storyteller_f.file_system_remote.RemoteAccessType
+import com.storyteller_f.file_system_remote.RemoteSchemes
 import com.storyteller_f.file_system_remote.RemoteSpec
 import com.storyteller_f.file_system_remote.checkSFtpConnection
 import kotlinx.coroutines.runBlocking
@@ -22,7 +22,7 @@ class SFtpDockerTest {
 
         Assume.assumeTrue("未安装 atmoz/sftp", isDockerContainerRunning("sftp"))
         val remoteSpec =
-            RemoteSpec("localhost", 1022, "myuser", "mypassword", RemoteAccessType.SFTP)
+            RemoteSpec("localhost", 1022, "myuser", "mypassword", RemoteSchemes.SFTP)
         remoteSpec.checkSFtpConnection()
         val uri = remoteSpec.toUri()
         runBlocking {

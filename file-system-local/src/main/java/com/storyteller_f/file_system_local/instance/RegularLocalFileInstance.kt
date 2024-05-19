@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local
+package com.storyteller_f.file_system_local.instance
 
 import android.content.Context
 import android.net.Uri
@@ -14,6 +14,8 @@ import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
 import com.storyteller_f.file_system.parentPath
+import com.storyteller_f.file_system_local.fileTime
+import com.storyteller_f.file_system_local.permissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

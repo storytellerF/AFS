@@ -1,4 +1,4 @@
-docker run --rm -d --name sftp \
+docker run --rm -d --name afs-test.sftp \
             -p 1022:22 \
             atmoz/sftp \
             myuser:mypassword:::upload

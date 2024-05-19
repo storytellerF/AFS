@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
 import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.instance.FileTime
+import com.storyteller_f.file_system_local.instance.DocumentLocalFileInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -43,7 +44,7 @@ fun Context.getStorageCompat(): List<File> {
         getStorageVolume().map { storageVolume: StorageVolume ->
             val uuid = storageVolume.uuid
             File(
-                LocalFileSystem.STORAGE_PATH,
+                LocalFileSystemPaths.STORAGE_PATH,
                 volumePathName(uuid)
             )
         }

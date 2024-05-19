@@ -28,7 +28,7 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val file =
-                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
+                appContext.buildZip("test.zip", listOf(Node("hello.txt", emptyList(), "hello")))
 
             val archiveFileInstance = getFileInstance(
                 appContext,
@@ -54,7 +54,7 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val zipFile =
-                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
+                appContext.buildZip("test.zip", listOf(Node("hello.txt", emptyList(), "hello")))
 
             val fileInstance = getFileInstance(appContext, Uri.fromFile(zipFile))!!
             val instance = fileInstance.toChildEfficiently(appContext, "hello.txt")
@@ -69,7 +69,7 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val zipFile =
-                appContext.buildZip(listOf(Node("hello.txt", emptyList(), "hello")), "test.zip")
+                appContext.buildZip("test.zip", listOf(Node("hello.txt", emptyList(), "hello")))
 
             val parentZip = File(appContext.filesDir, "parent.zip").ensureFile()!!
             ZipOutputStream(parentZip.outputStream()).use {
@@ -94,6 +94,7 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val zipFile = appContext.buildZip(
+                "test.zip",
                 listOf(
                     Node("hello.txt", emptyList(), "hello"),
                     Node(
@@ -102,8 +103,7 @@ class ArchiveFileInstanceTest {
                             Node("world", emptyList())
                         )
                     )
-                ),
-                "test.zip"
+                )
             )
 
             val zipUri = Uri.fromFile(zipFile)
@@ -128,6 +128,7 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val zipFile = appContext.buildZip(
+                "test.zip",
                 listOf(
                     Node("hello.txt", emptyList(), "hello"),
                     Node(
@@ -136,8 +137,7 @@ class ArchiveFileInstanceTest {
                             Node("world", emptyList())
                         )
                     )
-                ),
-                "test.zip"
+                )
             )
 
             val zipUri = Uri.fromFile(zipFile)
@@ -154,10 +154,10 @@ class ArchiveFileInstanceTest {
 
         runBlocking {
             val zipFile = appContext.buildZip(
+                "test.zip",
                 listOf(
                     Node("hello.txt", emptyList(), "hello"),
-                ),
-                "test.zip"
+                )
             )
 
             val zipUri = Uri.fromFile(zipFile)

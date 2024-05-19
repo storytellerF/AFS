@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local.fake
+package com.storyteller_f.file_system_local.instance.fake
 
 import android.net.Uri
 import com.storyteller_f.file_system.instance.FileInstance

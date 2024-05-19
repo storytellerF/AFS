@@ -7,18 +7,20 @@ import android.net.Uri
 import android.os.Build
 import com.storyteller_f.file_system.FileSystemPrefix
 import com.storyteller_f.file_system.instance.FileInstance
-import com.storyteller_f.file_system_local.LocalFileSystem.DATA
-import com.storyteller_f.file_system_local.LocalFileSystem.DATA_SUB_DATA
-import com.storyteller_f.file_system_local.LocalFileSystem.ROOT
-import com.storyteller_f.file_system_local.LocalFileSystem.SDCARD
-import com.storyteller_f.file_system_local.LocalFileSystem.SELF_PRIMARY
-import com.storyteller_f.file_system_local.LocalFileSystem.USER_APP
-import com.storyteller_f.file_system_local.LocalFileSystem.USER_DATA_FRONT_PATH
-import com.storyteller_f.file_system_local.LocalFileSystem.USER_EMULATED_FRONT_PATH
-import com.storyteller_f.file_system_local.fake.AppLocalFileInstance
-import com.storyteller_f.file_system_local.fake.FakeLocalFileInstance
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.DATA
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.DATA_SUB_DATA
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.ROOT
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.SDCARD
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.SELF_PRIMARY
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.USER_APP
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.USER_DATA_FRONT_PATH
+import com.storyteller_f.file_system_local.LocalFileSystemPaths.USER_EMULATED_FRONT_PATH
+import com.storyteller_f.file_system_local.instance.DocumentLocalFileInstance
+import com.storyteller_f.file_system_local.instance.RegularLocalFileInstance
+import com.storyteller_f.file_system_local.instance.fake.AppLocalFileInstance
+import com.storyteller_f.file_system_local.instance.fake.FakeLocalFileInstance
 
-object LocalFileSystem {
+object LocalFileSystemPaths {
     const val ROOT = "/"
 
     @SuppressLint("SdCardPath")
@@ -58,7 +60,7 @@ sealed class LocalFileSystemPrefix(open val key: String) : FileSystemPrefix {
     /**
      * /storage/self 本身
      */
-    data object Self : LocalFileSystemPrefix(LocalFileSystem.CURRENT_EMULATED_PATH)
+    data object Self : LocalFileSystemPrefix(LocalFileSystemPaths.CURRENT_EMULATED_PATH)
 
     /**
      * /storage/self/primary 本身以及所有的子文件
@@ -74,12 +76,12 @@ sealed class LocalFileSystemPrefix(open val key: String) : FileSystemPrefix {
     /**
      * /storage/emulated 本身
      */
-    data object EmulatedRoot : LocalFileSystemPrefix(LocalFileSystem.EMULATED_ROOT_PATH)
+    data object EmulatedRoot : LocalFileSystemPrefix(LocalFileSystemPaths.EMULATED_ROOT_PATH)
 
     /**
      * /storage 本身
      */
-    data object Storage : LocalFileSystemPrefix(LocalFileSystem.STORAGE_PATH)
+    data object Storage : LocalFileSystemPrefix(LocalFileSystemPaths.STORAGE_PATH)
 
     /**
      * 外接存储设备，目录应该是/storage/emulated/XX44-XX55 类似的目录
@@ -114,7 +116,7 @@ sealed class LocalFileSystemPrefix(open val key: String) : FileSystemPrefix {
     /**
      * /data/user 本身
      */
-    data object DataUser : LocalFileSystemPrefix(LocalFileSystem.USER_DATA)
+    data object DataUser : LocalFileSystemPrefix(LocalFileSystemPaths.USER_DATA)
 
     /**
      * /data/user/uid 本身
@@ -127,7 +129,7 @@ sealed class LocalFileSystemPrefix(open val key: String) : FileSystemPrefix {
 
 fun getLocalFileSystemPrefix(context: Context, path: String): LocalFileSystemPrefix =
     when {
-        LocalFileSystem.publicPath.any { path.startsWith(it) } -> LocalFileSystemPrefix.Public
+        LocalFileSystemPaths.publicPath.any { path.startsWith(it) } -> LocalFileSystemPrefix.Public
         path.startsWith(LocalFileSystemPrefix.SdCard.key) -> LocalFileSystemPrefix.SdCard
         path.startsWith(context.appDataDir()) -> LocalFileSystemPrefix.AppData(context.appDataDir())
         path.startsWith(
@@ -143,11 +145,11 @@ fun getLocalFileSystemPrefix(context: Context, path: String): LocalFileSystemPre
             ).substringBefore("/").toLong()
         )
 
-        path == LocalFileSystem.CURRENT_EMULATED_PATH -> LocalFileSystemPrefix.Self
-        path.startsWith(LocalFileSystem.CURRENT_EMULATED_PATH) -> LocalFileSystemPrefix.SelfPrimary
+        path == LocalFileSystemPaths.CURRENT_EMULATED_PATH -> LocalFileSystemPrefix.Self
+        path.startsWith(LocalFileSystemPaths.CURRENT_EMULATED_PATH) -> LocalFileSystemPrefix.SelfPrimary
         path == LocalFileSystemPrefix.EmulatedRoot.key -> LocalFileSystemPrefix.EmulatedRoot
         path == LocalFileSystemPrefix.Storage.key -> LocalFileSystemPrefix.Storage
-        path.startsWith(LocalFileSystem.STORAGE_PATH) -> LocalFileSystemPrefix.Mounted(
+        path.startsWith(LocalFileSystemPaths.STORAGE_PATH) -> LocalFileSystemPrefix.Mounted(
             extractSdPath(
                 path
             )

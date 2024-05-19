@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local.fake
+package com.storyteller_f.file_system_local.instance.fake
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,7 @@ import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.instance.FileTime
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
-import com.storyteller_f.file_system_local.LocalFileSystem
+import com.storyteller_f.file_system_local.LocalFileSystemPaths
 import com.storyteller_f.file_system_local.fileTime
 import com.storyteller_f.file_system_local.getMyId
 import com.storyteller_f.file_system_local.getStorageCompat
@@ -30,7 +30,7 @@ open class FakeLocalFileInstance(val context: Context, uri: Uri) :
     private val presetDirectories: MutableMap<String, List<String>> = mutableMapOf(
         "/data/user/$myId" to listOf(context.packageName),
         "/data/data" to listOf(context.packageName),
-        LocalFileSystem.EMULATED_ROOT_PATH to listOf(myId.toString()),
+        LocalFileSystemPaths.EMULATED_ROOT_PATH to listOf(myId.toString()),
         "/data/user" to listOf(myId.toString()),
     )
 
@@ -90,7 +90,7 @@ open class FakeLocalFileInstance(val context: Context, uri: Uri) :
             )
         }?.let(fileSystemPack::addDirectories)
 
-        if (path == LocalFileSystem.STORAGE_PATH) {
+        if (path == LocalFileSystemPaths.STORAGE_PATH) {
             storageVolumes().let(fileSystemPack::addDirectories)
         }
     }

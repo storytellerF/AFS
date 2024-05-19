@@ -12,7 +12,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.storyteller_f.afs.databinding.ActivityMainBinding
-import com.storyteller_f.file_system_local.checkFilePermission
+import com.storyteller_f.file_system_local.permission.checkFilePermission
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {

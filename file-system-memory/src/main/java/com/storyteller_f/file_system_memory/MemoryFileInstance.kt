@@ -1,8 +1,7 @@
 package com.storyteller_f.file_system_memory
 
-import android.content.Context
 import android.net.Uri
-import com.storyteller_f.file_system.FileInstanceFactory
+import com.storyteller_f.file_system.FileInstanceFactory2
 import com.storyteller_f.file_system.getExtension
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
@@ -159,11 +158,8 @@ class MemoryFileInstance(uri: Uri) : PathsFileInstance(uri) {
         get() = memoryFileSystems[uri.authority]!!.getPath(path)
 }
 
-class MemoryFileInstanceFactory : FileInstanceFactory {
-    override val schemes: List<String>
-        get() = listOf(MemoryFileInstance.SCHEME)
-
-    override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
+class MemoryFileInstanceFactory : FileInstanceFactory2 {
+    override suspend fun buildInstance(uri: Uri): FileInstance? {
         return if (uri.scheme == MemoryFileInstance.SCHEME) {
             MemoryFileInstance(uri)
         } else {

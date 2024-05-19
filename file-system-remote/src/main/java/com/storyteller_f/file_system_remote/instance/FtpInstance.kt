@@ -1,18 +1,19 @@
-package com.storyteller_f.file_system_remote
+package com.storyteller_f.file_system_remote.instance
 
 import android.net.Uri
 import com.storyteller_f.file_system.getExtension
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.instance.FileKind
-import com.storyteller_f.file_system.instance.FileTime
+import com.storyteller_f.file_system.instance.FilePermission
+import com.storyteller_f.file_system.instance.FilePermissions
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
+import com.storyteller_f.file_system_remote.RemoteSpec
 import org.apache.commons.net.PrintCommandListener
-import org.apache.commons.net.ftp.FTPClientConfig
+import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import org.apache.commons.net.ftp.FTPReply
-import org.apache.commons.net.ftp.FTPSClient
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,24 +21,26 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintWriter
 
-val ftpsClients = mutableMapOf<RemoteSpec, FtpsInstance>()
+val ftpClients = mutableMapOf<RemoteSpec, FtpInstance>()
 
-class FtpsFileInstance(uri: Uri, private val spec: RemoteSpec = RemoteSpec.parse(uri)) :
+class FtpFileInstance(uri: Uri, private val spec: RemoteSpec = RemoteSpec.parse(uri)) :
     FileInstance(uri) {
     private var ftpFile: FTPFile? = null
 
     private fun initCurrentFile(): FTPFile? {
-        val ftpInstance = getInstance()
-        return ftpInstance.getFile(path)?.apply {
+        return getInstance().get(path)?.apply {
             ftpFile = this
         }
     }
 
-    private fun getInstance(): FtpsInstance {
-        return ftpsClients.getOrPut(spec) {
-            FtpsInstance(spec)
+    private fun getInstance(): FtpInstance {
+        return ftpClients.getOrPut(spec) {
+            FtpInstance(spec)
         }
     }
+
+    val completePendingCommand
+        get() = getInstance().completePendingCommand
 
     override suspend fun filePermissions() = reconnectIfNeed()!!.permissions()
 
@@ -66,26 +69,26 @@ class FtpsFileInstance(uri: Uri, private val spec: RemoteSpec = RemoteSpec.parse
         listFiles?.forEach {
             val name = it.name
             val child = childUri(name)
-            val time = it.fileTime()
-            val filePermissions = it.permissions()
+            val permission = it.permissions()
+            val fileTime = it.fileTime()
             val kind = it.fileKind1()
             val info = FileInfo(
                 name,
                 child,
-                time,
+                fileTime,
                 kind,
-                filePermissions
+                permission,
             )
             if (it.isFile) {
                 fileSystemPack.addFile(info)
-            } else if (it.isDirectory) {
+            } else {
                 fileSystemPack.addDirectory(info)
             }
         }
     }
 
     private fun reconnectIfNeed(): FTPFile? {
-        return ftpFile ?: return initCurrentFile()
+        return ftpFile ?: initCurrentFile()
     }
 
     override suspend fun exists(): Boolean {
@@ -112,67 +115,74 @@ class FtpsFileInstance(uri: Uri, private val spec: RemoteSpec = RemoteSpec.parse
         TODO("Not yet implemented")
     }
 
-    override suspend fun toChild(name: String, policy: FileCreatePolicy) =
-        FtpsFileInstance(childUri(name), spec)
+    override suspend fun toChild(name: String, policy: FileCreatePolicy): FileInstance {
+        TODO("Not yet implemented")
+    }
 }
 
-class FtpsInstance(private val spec: RemoteSpec) {
-    private val ftps: FTPSClient = FTPSClient(spec.type == RemoteAccessType.FTPS).apply {
+class FtpInstance(private val spec: RemoteSpec) {
+    private val ftp: FTPClient = FTPClient().apply {
         addProtocolCommandListener(PrintCommandListener(PrintWriter(System.out)))
-        val ftpClientConfig = FTPClientConfig()
-        configure(ftpClientConfig)
     }
 
+    @Throws(IOException::class)
     fun open(): Boolean {
         connect()
-        val login = ftps.login(spec.user, spec.password)
-        if (login) {
-            ftps.enterLocalPassiveMode()
-        }
-        return login
+        return ftp.login(spec.user, spec.password)
     }
 
     private fun connect() {
-        if (ftps.isConnected) return
-        ftps.connect(spec.server, spec.port)
-        val reply = ftps.replyCode
+        ftp.connect(spec.server, spec.port)
+        val reply = ftp.replyCode
         if (!FTPReply.isPositiveCompletion(reply)) {
-            ftps.disconnect()
+            ftp.disconnect()
             throw IOException("Exception in connecting to FTP Server")
         }
     }
 
-    fun getFile(path: String?): FTPFile? {
-        return client {
-            mlistFile(path)
-        }
+    fun get(path: String?): FTPFile? {
+        return client { mlistFile(path) }
     }
 
-    fun listFiles(path: String?): Array<out FTPFile>? = client {
-        listFiles(path)
+    fun listFiles(path: String?): Array<out FTPFile>? {
+        return client { listFiles(path) }
     }
 
-    fun inputStream(path: String): InputStream? = client {
-        retrieveFileStream(path)
-    }
-
-    fun outputStream(path: String): OutputStream? = client {
-        storeFileStream(path)
-    }
-
-    /**
-     * @return 返回是否可用
-     */
-    private fun <T : Any> client(block: FTPSClient.() -> T): T {
-        if (isAvailable()) {
+    private fun <T : Any> client(block: FTPClient.() -> T): T {
+        if (!ftp.isConnected || !ftp.isAvailable) {
             if (!open()) {
-                throw Exception("login failed.")
+                throw Exception("login failed")
             }
         }
-        return ftps.block()
+        return ftp.block()
     }
 
-    internal fun isAvailable() = !ftps.isAvailable || !ftps.isConnected
+    fun inputStream(path: String): InputStream? {
+        return ftp.retrieveFileStream(path)
+    }
+
+    fun outputStream(path: String): OutputStream? {
+        return ftp.storeFileStream(path)
+    }
+
+    val completePendingCommand: Boolean
+        get() {
+            return ftp.completePendingCommand()
+        }
 }
 
-fun FTPFile.fileTime() = FileTime(timestamp.timeInMillis)
+fun FTPFile.permissions() = FilePermissions(
+    filePermission(FTPFile.USER_ACCESS),
+    filePermission(FTPFile.GROUP_ACCESS),
+    filePermission(FTPFile.WORLD_ACCESS)
+)
+
+fun FTPFile.filePermission(access: Int) = FilePermission(
+    hasPermission(access, FTPFile.READ_PERMISSION),
+    hasPermission(access, FTPFile.WRITE_PERMISSION),
+    hasPermission(access, FTPFile.EXECUTE_PERMISSION),
+)
+
+fun FTPFile.fileLength(): Long {
+    return size
+}

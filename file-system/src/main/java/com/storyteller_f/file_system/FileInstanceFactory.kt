@@ -10,12 +10,57 @@ interface FileSystemPrefix
 
 interface FileInstanceFactory {
 
-    val schemes: List<String>
+    /**
+     * @return 返回null 代表无法处理
+     */
     suspend fun buildInstance(context: Context, uri: Uri): FileInstance?
 
+    /**
+     * @return 返回null 代表无法处理
+     */
     fun getPrefix(context: Context, uri: Uri): FileSystemPrefix? = null
 
+    /**
+     * @param name 如果name 是null，相当于获取压缩文件的根目录。
+     * @param fileInstance 本身代表一个文件，不过这个文件本身也可以是嵌入文件中的一个文件
+     * @return 返回null 代表无法处理
+     */
     fun buildNestedFile(context: Context, name: String?, fileInstance: FileInstance): Uri? = null
+}
+
+interface FileInstanceFactory2 : FileInstanceFactory {
+    override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
+        return buildInstance(uri)
+    }
+
+    /**
+     * @return 返回null 代表无法处理
+     */
+    suspend fun buildInstance(uri: Uri): FileInstance?
+
+    override fun getPrefix(context: Context, uri: Uri): FileSystemPrefix? {
+        return getPrefix(uri)
+    }
+
+    /**
+     * @return 返回null 代表无法处理
+     */
+    fun getPrefix(uri: Uri): FileSystemPrefix? = null
+
+    override fun buildNestedFile(
+        context: Context,
+        name: String?,
+        fileInstance: FileInstance
+    ): Uri? {
+        return buildNestedFile(name, fileInstance)
+    }
+
+    /**
+     * @param name 如果name 是null，相当于获取压缩文件的根目录。
+     * @param fileInstance 本身代表一个文件，不过这个文件本身也可以是嵌入文件中的一个文件
+     * @return 返回null 代表无法处理
+     */
+    fun buildNestedFile(name: String?, fileInstance: FileInstance): Uri? = null
 }
 
 @Suppress("unused")
@@ -57,7 +102,6 @@ suspend fun <R> getFactory(uri: Uri, block: suspend FileInstanceFactory.(Uri) ->
 
 /**
  * 会针对. 和.. 特殊路径进行处理。
- * 无法正确处理toChild 时是ArchiveFileInstance 的情况
  */
 @Throws(Exception::class)
 suspend fun FileInstance.toChildEfficiently(

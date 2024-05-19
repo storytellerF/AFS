@@ -1,4 +1,4 @@
-package com.storyteller_f.file_system_local
+package com.storyteller_f.file_system_local.instance
 
 import android.content.Context
 import android.net.Uri

@@ -1,6 +1,6 @@
 package com.storyteller_f.file_system_remote
 
-object RemoteAccessType {
+object RemoteSchemes {
     const val FTP = "ftp"
     const val SFTP = "sftp"
     const val SMB = "smb"

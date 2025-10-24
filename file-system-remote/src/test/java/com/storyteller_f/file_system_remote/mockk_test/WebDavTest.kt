@@ -19,6 +19,7 @@ class WebDavTest {
     @get:Rule
     val commonRelu = MockRemoteFileSystemRule(MockRemoteFileSystem.webDavSpec)
 
+    @Config(sdk = [30])
     @Test
     fun test() {
         val context = RuntimeEnvironment.getApplication()

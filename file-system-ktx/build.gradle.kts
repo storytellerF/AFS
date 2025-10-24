@@ -1,25 +1,20 @@
-import com.storyteller_f.version_manager.apiModule
-import com.storyteller_f.version_manager.baseLibrary
-import com.storyteller_f.version_manager.constraintCommonUIListVersion
-import com.storyteller_f.version_manager.unitTestDependency
-
-val versionManager: String by project
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("com.storyteller_f.version_manager")
+
     id("common-publish")
+    id("common-library")
 }
 
 android {
     namespace = "com.storyteller_f.file_system_ktx"
 }
-baseLibrary()
-apiModule(":file-system")
+
 dependencies {
+    implementation(project(":file-system"))
     implementation(libs.simplemagic)
-    unitTestDependency()
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
-constraintCommonUIListVersion(versionManager)

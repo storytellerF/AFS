@@ -100,14 +100,13 @@ class MainActivity : AppCompatActivity() {
         val context = this
         lifecycleScope.launch {
             val prefix = getFileSystemPrefix(context, path) as LocalFileSystemPrefix
+            val input = generateSAFRequestIntent(prefix) ?: return@launch
             registerForActivityResult(
                 ActivityResultContracts.StartActivityForResult()
             ) {
                 if (processResult(it)) return@registerForActivityResult
                 failure()
-            }.launch(
-                generateSAFRequestIntent(prefix)
-            )
+            }.launch(input)
         }
     }
 
@@ -140,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         val context = this
         lifecycleScope.launch {
             val prefix = getFileSystemPrefix(context, path) as LocalFileSystemPrefix
+            val input = generateSAFRequestIntent(prefix) ?: return@launch
             registerForActivityResult(
                 ActivityResultContracts.StartActivityForResult()
             ) {
@@ -150,9 +150,7 @@ class MainActivity : AppCompatActivity() {
                     return@registerForActivityResult
                 }
                 failure()
-            }.launch(
-                generateSAFRequestIntent(prefix)
-            )
+            }.launch(input)
         }
     }
 
@@ -169,7 +167,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String?>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

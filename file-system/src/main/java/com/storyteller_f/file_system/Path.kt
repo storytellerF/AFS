@@ -83,7 +83,7 @@ fun simplePath(path: String): String {
             }
         } else if (s != ".") stack.add(s)
     }
-    if (stack.size > 1 && stack.last == "/") stack.removeLast()
+    if (stack.size > 1 && stack.last() == "/") stack.removeLast()
     return stack.joinToString("")
 }
 
@@ -94,7 +94,7 @@ private fun checkPath(
 ) {
     if (current != '/') {
         nameStack.add(current)
-    } else if (stack.last != "/" || nameStack.size != 0) {
+    } else if (stack.last() != "/" || nameStack.isNotEmpty()) {
         val name = nameStack.joinToString("")
         nameStack.clear()
         when (name) {

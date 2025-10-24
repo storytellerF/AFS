@@ -1,1 +1,2 @@
-sh gradlew clean -xtest -xlint assemble publishToMavenLocal
+#!/bin/sh
+./gradlew clean -xtest -xlint assemble publishToMavenLocal

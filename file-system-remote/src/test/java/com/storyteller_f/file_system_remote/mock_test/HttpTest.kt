@@ -43,6 +43,7 @@ class HttpTest {
         }
     }
 
+    @Config(sdk = [30])
     @Test
     fun test() {
         val appContext = RuntimeEnvironment.getApplication()

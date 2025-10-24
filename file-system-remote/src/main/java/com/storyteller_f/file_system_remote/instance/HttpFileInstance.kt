@@ -34,25 +34,19 @@ class HttpFileInstance(uri: Uri) : FileInstance(uri) {
     private suspend fun createIfNeed(): File {
         if (::tempFile.isInitialized) {
             return tempFile
-        } else {
-            val okHttpClient = OkHttpClient()
-            val execute =
-                okHttpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
-            if (!execute.isSuccessful) {
-                throw Exception("$uri code is ${execute.code}")
-            } else {
-                val body = execute.body
-                if (body == null) {
-                    throw Exception("$uri body is empty")
-                } else {
-                    Log.i("TAG", "ensureFile: $body")
-                    val file = createFile(execute).ensureFile()!!
-                    file.write(body)
-                    tempFile = file
-                    return file
-                }
-            }
         }
+        val okHttpClient = OkHttpClient()
+        val execute =
+            okHttpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
+        if (!execute.isSuccessful) {
+            throw Exception("$uri code is ${execute.code}")
+        }
+        val body = execute.body
+        Log.i("TAG", "ensureFile: $body")
+        val file = createFile(execute).ensureFile()!!
+        file.write(body)
+        tempFile = file
+        return file
     }
 
     private fun createFile(execute: Response): File {

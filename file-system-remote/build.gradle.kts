@@ -1,45 +1,36 @@
-import com.storyteller_f.version_manager.baseLibrary
-import com.storyteller_f.version_manager.constraintCommonUIListVersion
-import com.storyteller_f.version_manager.implModule
-import com.storyteller_f.version_manager.unitTestDependency
-
-val versionManager: String by project
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("com.storyteller_f.version_manager")
+
     id("common-publish")
+    id("common-library")
 }
 
 android {
     namespace = "com.storyteller_f.file_system_remote"
 }
-baseLibrary()
+
 configurations.all {
     resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
         select("com.google.guava:guava:0")
     }
 }
 dependencies {
-    // https://mvnrepository.com/artifact/androidx.annotation/annotation
     implementation(libs.androidx.annotation)
-    implModule(":common-ktx")
-    implModule(":slim-ktx")
-    implModule(":file-system")
-    unitTestDependency()
+    implementation(libs.common.ktx)
+    implementation(libs.slim.ktx)
+    implementation(project(":file-system"))
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.okhttp)
     testImplementation(libs.mockwebserver)
-    // https://mvnrepository.com/artifact/commons-net/commons-net
     implementation(libs.commons.net)
-    // https://mvnrepository.com/artifact/org.mockftpserver/MockFtpServer
     testImplementation(libs.mock.ftp.server)
-    // https://mvnrepository.com/artifact/com.hierynomus/smbj
     implementation(libs.smbj)
-    // https://mvnrepository.com/artifact/com.hierynomus/sshj
     implementation(libs.sshj)
     implementation(libs.prov)
     loadSardine()
@@ -49,7 +40,7 @@ dependencies {
     testImplementation(libs.jimfs)
     testImplementation(libs.logback.android)
 }
-constraintCommonUIListVersion(versionManager)
+
 fun DependencyHandlerScope.loadSardine() {
     val project = findProject(":sardine-android")
     if (project != null) {

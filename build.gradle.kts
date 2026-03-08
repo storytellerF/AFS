@@ -24,7 +24,7 @@ setupKover(
         "file-system-local",
         "file-system-memory",
         "file-system-remote",
-        "file-system-root",
+//        "file-system-root",
     ), listOf()
 )
 tasks.withType<Test> {
@@ -61,11 +61,8 @@ fun Project.setupDetekt() {
         dependencies {
             val detektVersion = "1.23.1"
 
-            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
-            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-libraries:$detektVersion")
-            //noinspection UseTomlInstead
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors:$detektVersion")
         }
         tasks.withType<Detekt>().configureEach {

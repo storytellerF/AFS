@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.2"
 compileSdk = "36"
 documentfile = "1.1.0"
 minSdk = "26"
@@ -7,7 +7,7 @@ annotation = "1.9.1"
 commonsNet = "3.12.0"
 gson = "2.13.2"
 jimfs = "1.3.1"
-kotlin = "2.2.20"
+kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -19,17 +19,17 @@ logbackAndroid = "3.0.0"
 material = "1.13.0"
 constraintlayout = "2.2.1"
 mockftpserver = "3.2.0"
-mockkVersion = "1.14.6"
-navigationFragmentKtx = "2.9.5"
-navigationUiKtx = "2.9.5"
-okhttp = "5.2.1"
+mockkVersion = "1.14.9"
+navigationFragmentKtx = "2.9.7"
+navigationUiKtx = "2.9.7"
+okhttp = "5.3.2"
 prov = "1.58.0.0"
 simplemagic = "1.17"
 sshj = "0.40.0"
 smbj = "0.14.0"
 uiautomator = "2.3.0"
-ksp = "2.2.20-2.0.4"
-commonUiList = "e98dd30f60"
+ksp = "2.3.6"
+commonUiList = "1.0.0-SNAPSHOT"
 
 [libraries]
 android-plugin-lib = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -38,11 +38,12 @@ kotlin-plugin-lib = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", vers
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
-common-ktx = { module = "com.github.storytellerF.common-ui-list:common-ktx", version.ref = "commonUiList" }
-common-ui-list-slim-ktx = { module = "com.github.storytellerF.common-ui-list:slim-ktx", version.ref = "commonUiList" }
+common-ktx = { module = "com.storytellerF.common_ui_list:common-ktx", version.ref = "commonUiList" }
+common-ui-list-slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx", version.ref = "commonUiList" }
+compat-ktx = { module = "com.storytellerF.common_ui_list:compat-ktx", version.ref = "commonUiList" }
+github-slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx" }
+slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx" }
 commons-net = { module = "commons-net:commons-net", version.ref = "commonsNet" }
-compat-ktx = { module = "com.github.storytellerF.common-ui-list:compat-ktx", version.ref = "commonUiList" }
-github-slim-ktx = { module = "com.github.storytellerF.common-ui-list:slim-ktx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -64,7 +65,6 @@ nio = { module = "com.github.topjohnwu.libsu:nio", version.ref = "libsuVersion" 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 prov = { module = "com.madgag.spongycastle:prov", version.ref = "prov" }
 simplemagic = { module = "com.j256.simplemagic:simplemagic", version.ref = "simplemagic" }
-slim-ktx = { module = "com.github.storytellerF.common-ui-list:slim-ktx" }
 sshj = { module = "com.hierynomus:sshj", version.ref = "sshj" }
 smbj = { module = "com.hierynomus:smbj", version.ref = "smbj" }
 

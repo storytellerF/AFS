@@ -1,5 +1,0 @@
-docker run --rm -d --name afs-test.webdav \
-           -p 7000:8080 \
-           -e "WEBDAV_USERNAME=myuser" \
-           -e "WEBDAV_PASSWORD=mypassword" \
-           ionelmc/webdav

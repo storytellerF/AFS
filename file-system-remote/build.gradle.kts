@@ -39,6 +39,7 @@ dependencies {
     testImplementation(libs.mockk.agent)
     testImplementation(libs.jimfs)
     testImplementation(libs.logback.android)
+    testImplementation(libs.testcontainers)
 }
 
 fun DependencyHandlerScope.loadSardine() {
@@ -46,7 +47,6 @@ fun DependencyHandlerScope.loadSardine() {
     if (project != null) {
         implementation(project)
     } else {
-//        implementation("com.github.storytellerF:sardine-android:7da4aa36e1")
         implementation("com.github.thegrizzlylabs:sardine-android:0.9")
     }
 }

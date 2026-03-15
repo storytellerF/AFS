@@ -1,7 +1,6 @@
 package com.storyteller_f.file_system_local
 
 import android.content.Context
-import android.os.Build
 import android.os.Process
 import android.os.UserManager
 import androidx.core.content.ContextCompat
@@ -10,12 +9,8 @@ import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.instance.FileKind
 
-fun Context.getMyId() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-    ContextCompat.getSystemService(this, UserManager::class.java)!!
-        .getSerialNumberForUser(Process.myUserHandle())
-} else {
-    0L
-}
+fun Context.getMyId() = ContextCompat.getSystemService(this, UserManager::class.java)!!
+    .getSerialNumberForUser(Process.myUserHandle())
 
 @Suppress("unused")
 fun Context.getCurrentUserEmulatedPath() =

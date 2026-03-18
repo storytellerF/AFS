@@ -55,6 +55,6 @@ class FilePermissions(
         }
 
         fun permissions(r: Boolean, w: Boolean, e: Boolean) =
-            FilePermissions(FilePermission(r, w, e))
+            FilePermissions(FilePermission(readable = r, writable = w, executable = e))
     }
 }

@@ -22,6 +22,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.jimfs)
     testImplementation(libs.junit)
+    testImplementation("org.robolectric:robolectric:4.11.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":file-system"))

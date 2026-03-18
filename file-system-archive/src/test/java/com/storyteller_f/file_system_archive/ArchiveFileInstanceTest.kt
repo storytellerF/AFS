@@ -1,8 +1,6 @@
 package com.storyteller_f.file_system_archive
 
 import android.net.Uri
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.storyteller_f.file_system.ensureFile
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.instance.FileCreatePolicy
@@ -19,12 +17,15 @@ import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-@RunWith(AndroidJUnit4::class)
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+
+@RunWith(RobolectricTestRunner::class)
 class ArchiveFileInstanceTest {
 
     @Test
     fun testArchiveFileInstance() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val file =
@@ -50,7 +51,7 @@ class ArchiveFileInstanceTest {
 
     @Test
     fun testLocalArchiveFileInstanceToChildEfficiently() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val zipFile =
@@ -65,7 +66,7 @@ class ArchiveFileInstanceTest {
 
     @Test
     fun testNestedArchiveFileInstance() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val zipFile =
@@ -90,7 +91,7 @@ class ArchiveFileInstanceTest {
 
     @Test
     fun testMultiEntry() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val zipFile = appContext.buildZip(
@@ -124,7 +125,7 @@ class ArchiveFileInstanceTest {
 
     @Test
     fun testParent() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val zipFile = appContext.buildZip(
@@ -150,7 +151,7 @@ class ArchiveFileInstanceTest {
 
     @Test
     fun testExists() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = RuntimeEnvironment.getApplication()
 
         runBlocking {
             val zipFile = appContext.buildZip(

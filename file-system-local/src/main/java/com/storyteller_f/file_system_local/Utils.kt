@@ -3,13 +3,12 @@ package com.storyteller_f.file_system_local
 import android.content.Context
 import android.os.Process
 import android.os.UserManager
-import androidx.core.content.ContextCompat
 import com.storyteller_f.file_system.buildPath
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
 import com.storyteller_f.file_system.instance.FileKind
 
-fun Context.getMyId() = ContextCompat.getSystemService(this, UserManager::class.java)!!
+fun Context.getMyId() = (getSystemService(Context.USER_SERVICE) as UserManager)
     .getSerialNumberForUser(Process.myUserHandle())
 
 @Suppress("unused")

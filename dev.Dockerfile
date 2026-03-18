@@ -2,6 +2,8 @@ FROM storytellerf/android-in-docker:latest-dev
 
 ARG USER_NAME
 
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y fcitx fcitx-googlepinyin
+
 USER root
 
 # 如果需要在容器中访问docker 的话

@@ -127,7 +127,18 @@ abstract class PathsFileInstance(uri: Uri) : FileInstance(uri) {
     }
 
     override suspend fun toChild(name: String, policy: FileCreatePolicy): FileInstance? {
-        return MemoryFileInstance(childUri(name))
+        val childInstance = MemoryFileInstance(childUri(name))
+        when (policy) {
+            is FileCreatePolicy.Create -> {
+                if (policy.isFile) {
+                    childInstance.createFile()
+                } else {
+                    childInstance.createDirectory()
+                }
+            }
+            FileCreatePolicy.NotCreate -> Unit
+        }
+        return childInstance
     }
 
     override suspend fun toParent(): FileInstance {

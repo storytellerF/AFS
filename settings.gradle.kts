@@ -28,7 +28,7 @@ dependencyResolutionManagement {
                 password = providers.gradleProperty("gpr.key").get()
             }
             mavenContent {
-                includeGroupAndSubgroups("com.storytellerF.common_ui_list")
+                includeGroupAndSubgroups("com.storyteller_f.common_ui_list")
             }
         }
         mavenCentral()

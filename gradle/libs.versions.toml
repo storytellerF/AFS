@@ -39,11 +39,11 @@ kotlin-plugin-lib = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", vers
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
-common-ktx = { module = "com.storytellerF.common_ui_list:common-ktx", version.ref = "commonUiList" }
-common-ui-list-slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx", version.ref = "commonUiList" }
-compat-ktx = { module = "com.storytellerF.common_ui_list:compat-ktx", version.ref = "commonUiList" }
-github-slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx" }
-slim-ktx = { module = "com.storytellerF.common_ui_list:slim-ktx" }
+common-ktx = { module = "com.storyteller_f.common_ui_list:common-ktx", version.ref = "commonUiList" }
+common-ui-list-slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx", version.ref = "commonUiList" }
+compat-ktx = { module = "com.storyteller_f.common_ui_list:compat-ktx", version.ref = "commonUiList" }
+github-slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx" }
+slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx" }
 commons-net = { module = "commons-net:commons-net", version.ref = "commonsNet" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }

@@ -24,9 +24,9 @@ class FilePermissionsTest {
         val group = FilePermission(readable = true)
         val others = FilePermission()
         val permissions = FilePermissions(user, group, others)
-        
+
         assertEquals("rw--r------", permissions.toString())
-        
+
         val permissionsNull = FilePermissions(userPermission = user)
         assertEquals("rw---------", permissionsNull.toString())
     }

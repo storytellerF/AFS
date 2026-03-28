@@ -11,14 +11,13 @@ import kotlinx.coroutines.withContext
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class ArchiveFileInstanceTest {
@@ -61,7 +60,6 @@ class ArchiveFileInstanceTest {
             val instance = fileInstance.toChildEfficiently(appContext, "hello.txt")
             assertEquals("hello.txt", instance.name)
         }
-
     }
 
     @Test
@@ -86,7 +84,6 @@ class ArchiveFileInstanceTest {
             val textFileInstance = instance.toChildEfficiently(appContext, "hello.txt")
             assertEquals("hello.txt", textFileInstance.name)
         }
-
     }
 
     @Test
@@ -99,7 +96,8 @@ class ArchiveFileInstanceTest {
                 listOf(
                     Node("hello.txt", emptyList(), "hello"),
                     Node(
-                        "hello", listOf(
+                        "hello",
+                        listOf(
                             Node("text.html", emptyList(), ""),
                             Node("world", emptyList())
                         )
@@ -114,7 +112,7 @@ class ArchiveFileInstanceTest {
             assertEquals(2, pack.count)
             assertEquals("/hello.txt", pack.files.first().fullPath)
             assertEquals("/hello", pack.directories.first().fullPath)
-            //test toChild
+            // test toChild
             val child = fileInstance.toChild("hello", FileCreatePolicy.NotCreate)!!
             val childPack = child.list()
             assertEquals(2, childPack.count)
@@ -133,7 +131,8 @@ class ArchiveFileInstanceTest {
                 listOf(
                     Node("hello.txt", emptyList(), "hello"),
                     Node(
-                        "hello", listOf(
+                        "hello",
+                        listOf(
                             Node("text.html", emptyList(), ""),
                             Node("world", emptyList())
                         )

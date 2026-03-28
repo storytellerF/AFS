@@ -11,7 +11,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 
 class MockImageView(context: android.content.Context) : ImageView(context) {
     var lastResId: Int = 0
@@ -38,7 +37,7 @@ class CommonTest {
     fun testIsFileAndIsDirectory() {
         val fileInfoFile = mockFileInfo("test.txt", "/test.txt", isDir = false, extension = "txt")
         assertTrue(fileInfoFile.isFile)
-        
+
         val fileInfoDir = mockFileInfo("test_dir", "/test_dir", isDir = true)
         assertTrue(fileInfoDir.isDirectory)
     }
@@ -57,7 +56,7 @@ class CommonTest {
         val folder = mockFileInfo("folder", "/folder", isDir = true)
         imageView.fileIcon(folder)
         assertEquals(R.drawable.ic_folder_explorer, imageView.lastResId)
-        
+
         // Test Image
         val image = mockFileInfo("pic.png", "/pic.png", isDir = false, extension = "png")
         imageView.fileIcon(image)
@@ -67,7 +66,7 @@ class CommonTest {
         val unknown = mockFileInfo("file.xyz", "/file.xyz", isDir = false, extension = "xyz")
         imageView.fileIcon(unknown)
         assertEquals(R.drawable.ic_unknow, imageView.lastResId)
-        
+
         // Test Empty Ext (binary)
         val binary = mockFileInfo("Makefile", "/Makefile", isDir = false, extension = "")
         imageView.fileIcon(binary)

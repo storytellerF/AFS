@@ -17,13 +17,13 @@ class FileKindTest {
             size = 100L,
             extension = "txt"
         )
-        
+
         assertTrue(fileKind.isFile)
         assertFalse(fileKind.isDirectory)
         assertTrue(fileKind.isHidden)
         assertFalse(fileKind.symbolicLink)
         assertNull(fileKind.linkType)
-        
+
         val file = fileKind as FileKind.File
         assertEquals(100L, file.size)
         assertEquals("txt", file.extension)
@@ -38,12 +38,12 @@ class FileKindTest {
             size = 0L,
             extension = ""
         )
-        
+
         assertTrue(fileKind.isDirectory)
         assertFalse(fileKind.isFile)
         assertFalse(fileKind.isHidden)
         assertFalse(fileKind.symbolicLink)
-        
+
         assertTrue(fileKind is FileKind.Directory)
     }
 
@@ -56,7 +56,7 @@ class FileKindTest {
             size = 50L,
             extension = "lnk"
         )
-        
+
         assertTrue(fileKind.isFile)
         assertTrue(fileKind.symbolicLink)
         assertTrue(fileKind.linkType is SymbolicLinkType.Soft)
@@ -67,11 +67,11 @@ class FileKindTest {
     fun testSymbolicLinkTypeProperties() {
         val softLink = SymbolicLinkType.Soft("target/path")
         val hardLink = SymbolicLinkType.Hard("target/file")
-        
+
         assertTrue(softLink.isSoft)
         assertFalse(softLink.isHard)
         assertEquals("target/path", softLink.origin)
-        
+
         assertTrue(hardLink.isHard)
         assertFalse(hardLink.isSoft)
         assertEquals("target/file", hardLink.origin)

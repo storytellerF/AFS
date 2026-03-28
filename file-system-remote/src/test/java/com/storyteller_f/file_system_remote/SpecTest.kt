@@ -27,7 +27,7 @@ class SpecTest {
     fun testShareSpecParse() {
         val uri = Uri.parse("smb://guest:nopass@10.0.0.1:445/media")
         val shareSpec = ShareSpec.parse(uri)
-        
+
         assertEquals("10.0.0.1", shareSpec.server)
         assertEquals(445, shareSpec.port)
         assertEquals("guest", shareSpec.user)
@@ -56,7 +56,7 @@ class SpecTest {
         val base64Server = "server.net".toByteArray().let { kotlin.io.encoding.Base64.encode(it) }
         val uri = Uri.parse("sftp://root:secret@$base64Server:22/")
         val remoteSpec = RemoteSpec.parse(uri)
-        
+
         assertEquals("server.net", remoteSpec.server)
         assertEquals(22, remoteSpec.port)
         assertEquals("root", remoteSpec.user)

@@ -1,8 +1,8 @@
 package com.storyteller_f.file_system_remote
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RemoteSchemesTest {
@@ -16,7 +16,7 @@ class RemoteSchemesTest {
         assertTrue(excludeHttp.contains(RemoteSchemes.FTP_ES))
         assertTrue(excludeHttp.contains(RemoteSchemes.FTPS))
         assertTrue(excludeHttp.contains(RemoteSchemes.WEB_DAV))
-        
+
         assertFalse(excludeHttp.contains(RemoteSchemes.HTTP))
         assertFalse(excludeHttp.contains(RemoteSchemes.HTTPS))
     }
@@ -26,7 +26,7 @@ class RemoteSchemesTest {
         val httpProtocol = RemoteSchemes.HTTP_PROTOCOL
         assertTrue(httpProtocol.contains(RemoteSchemes.HTTP))
         assertTrue(httpProtocol.contains(RemoteSchemes.HTTPS))
-        
+
         assertFalse(httpProtocol.contains(RemoteSchemes.SMB))
     }
 

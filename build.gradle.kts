@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.googleKsp) apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
-    id("org.jetbrains.kotlinx.kover") version "0.9.3"
+    id("org.jetbrains.kotlinx.kover") version "0.9.8"
     id("com.starter.easylauncher") version ("6.2.0") apply false
 }
 
@@ -109,6 +109,11 @@ fun Project.setupKover(
             if (androidLibModules.contains(name)) {
                 val robolectricVersion = "4.11.1"
                 "testImplementation"("org.robolectric:robolectric:$robolectricVersion")
+            }
+        }
+        if (name == "file-system-remote") {
+            tasks.withType<Test>().configureEach {
+                exclude("**/docker_test/**", "**/mock_test/**")
             }
         }
         kover {

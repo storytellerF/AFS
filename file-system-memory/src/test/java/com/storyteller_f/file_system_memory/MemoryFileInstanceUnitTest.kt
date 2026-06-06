@@ -4,6 +4,8 @@ import android.net.Uri
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import com.storyteller_f.file_system.instance.FileCreatePolicy
+import com.storyteller_f.file_system.instance.FileInstance
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
@@ -75,5 +77,49 @@ class MemoryFileInstanceUnitTest {
         val parent = renamed.toParent()
         assertTrue(parent.exists())
         assertEquals("/books", parent.uri.path)
+    }
+
+    @Test
+    fun testCreateDirectoryChildAndListDirectoryContents() = runTest {
+        val dirUri = Uri.Builder().scheme(MemoryFileInstance.SCHEME).authority("test").path("/library").build()
+        val dirInstance = MemoryFileInstance(dirUri)
+        assertTrue(dirInstance.createDirectory())
+
+        val file = dirInstance.toChild("novel.txt", FileCreatePolicy.Create(true))!!
+        val directory = dirInstance.toChild("authors", FileCreatePolicy.Create(false))!!
+
+        val pack = dirInstance.list()
+        assertEquals(2, pack.count)
+        assertEquals("novel.txt", pack.files.single().name)
+        assertEquals(file.uri, pack.files.single().uri)
+        assertEquals("authors", pack.directories.single().name)
+        assertEquals(directory.uri, pack.directories.single().uri)
+    }
+
+    @Test
+    fun testFactoryBuildsOnlyMemoryInstances() = runTest {
+        val factory = MemoryFileInstanceFactory()
+        val memoryUri = Uri.Builder().scheme(MemoryFileInstance.SCHEME).authority("test").path("/home").build()
+        val regularUri = Uri.Builder().scheme("file").path("/home").build()
+
+        assertTrue(factory.buildInstance(memoryUri) is MemoryFileInstance)
+        assertNull(factory.buildInstance(regularUri))
+    }
+
+    @Test
+    fun testFileStreamMethodsAreNotImplemented() {
+        val uri = Uri.Builder().scheme(MemoryFileInstance.SCHEME).authority("test").path("/home/hello.txt").build()
+        val fileInstance: FileInstance = MemoryFileInstance(uri)
+
+        assertThrows(NotImplementedError::class.java) {
+            runBlocking {
+                fileInstance.getFileInputStream()
+            }
+        }
+        assertThrows(NotImplementedError::class.java) {
+            runBlocking {
+                fileInstance.getFileOutputStream()
+            }
+        }
     }
 }

@@ -273,12 +273,13 @@ class FileDeleteOp(
 
     private suspend fun deleteChildFile(fileInstance: FileInstance, it: FileInfo): Boolean {
         val childFile = fileInstance.toChildEfficiently(context, it.name, NotCreate)
+        val childFileSize = childFile.size()
         val deleteFileOrEmptyDirectory = childFile.deleteFileOrEmptyDirectory()
         if (deleteFileOrEmptyDirectory) {
             onFileDone(
                 childFile,
                 Message("delete ${it.name} success"),
-                fileInstance.size()
+                childFileSize
             )
         } else {
             onError(Message("delete ${it.name} failed"))

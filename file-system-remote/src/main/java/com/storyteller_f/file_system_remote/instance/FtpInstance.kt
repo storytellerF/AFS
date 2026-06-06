@@ -178,9 +178,9 @@ fun FTPFile.permissions() = FilePermissions(
 )
 
 fun FTPFile.filePermission(access: Int) = FilePermission(
-    hasPermission(access, FTPFile.READ_PERMISSION),
-    hasPermission(access, FTPFile.WRITE_PERMISSION),
-    hasPermission(access, FTPFile.EXECUTE_PERMISSION),
+    readable = hasPermission(access, FTPFile.READ_PERMISSION),
+    writable = hasPermission(access, FTPFile.WRITE_PERMISSION),
+    executable = hasPermission(access, FTPFile.EXECUTE_PERMISSION),
 )
 
 fun FTPFile.fileLength(): Long {

@@ -30,23 +30,15 @@ AFS 是一组面向 Android 的文件系统抽象库，用统一的 `FileInstanc
 - Android SDK，`compileSdk = 36`，`minSdk = 26`
 - Gradle Wrapper：使用仓库内的 `./gradlew`
 
-仓库依赖 `com.storyteller_f.common_ui_list`，解析 GitHub Packages 时需要在 `~/.gradle/gradle.properties` 配置：
-
-```properties
-gpr.user=你的 GitHub 用户名
-gpr.key=你的 GitHub token
-```
-
 ## 集成
 
-通过 JitPack 使用时，先添加仓库：
+AFS 发布到 Maven Central，只需确保项目使用 Maven Central：
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://jitpack.io")
     }
 }
 ```
@@ -55,18 +47,12 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.storytellerF.AFS:file-system:<version>")
-    implementation("com.github.storytellerF.AFS:file-system-local:<version>")
-    implementation("com.github.storytellerF.AFS:file-system-remote:<version>")
-    implementation("com.github.storytellerF.AFS:file-system-archive:<version>")
-    implementation("com.github.storytellerF.AFS:file-system-ktx:<version>")
+    implementation("io.github.storytellerf:file-system:<version>")
+    implementation("io.github.storytellerf:file-system-local:<version>")
+    implementation("io.github.storytellerf:file-system-remote:<version>")
+    implementation("io.github.storytellerf:file-system-archive:<version>")
+    implementation("io.github.storytellerf:file-system-ktx:<version>")
 }
-```
-
-如果使用 GitHub Packages 发布产物，默认 group 为：
-
-```text
-com.storyteller_f.afs
 ```
 
 ## 基础用法
@@ -151,26 +137,23 @@ ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当�
 
 ```shell
 ./gradlew clean -xtest -xlint assemble publishToMavenLocal \
-  -Pgroup=com.github.storytellerF.AFS \
+  -Pgroup=io.github.storytellerf \
   -Pversion=<version>
 ```
 
-发布到 GitHub Packages：
+发布到 Maven Central 需要 Central Portal 凭据和 GPG 签名密钥：
 
 ```shell
-./gradlew publishAllPublicationsToGitHubPackagesRepository \
-  -Pgpr.user=<github-user> \
-  -Pgpr.key=<github-token> \
-  -Pgroup=com.storyteller_f.afs \
+./gradlew publishAllPublicationsToMavenCentralRepository \
+  -PmavenCentralUsername=<central-username> \
+  -PmavenCentralPassword=<central-password> \
+  -PsigningInMemoryKey=<base64-gpg-private-key> \
+  -PsigningInMemoryKeyPassword=<gpg-passphrase> \
+  -Pgroup=io.github.storytellerf \
   -Pversion=<version>
 ```
 
-也可以使用仓库脚本：
-
-```shell
-./jitpack-publish.sh
-./github-publish.sh
-```
+推送形如 `v1.2.3` 的 tag 时，GitHub Actions 会使用 `CENTRAL_USERNAME`、`CENTRAL_PASSWORD`、`GPG_PRIVATE_KEY` 和 `GPG_PASSPHRASE` secrets 自动发布。
 
 ## 开发说明
 

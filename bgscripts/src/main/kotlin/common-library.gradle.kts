@@ -31,11 +31,6 @@ android {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
     lint {
         compileSdk = libs.versions.compileSdk.get().toInt()
     }

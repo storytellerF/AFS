@@ -6,6 +6,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.vanniktech.maven.publish") version "0.37.0" apply false
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.googleKsp) apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"

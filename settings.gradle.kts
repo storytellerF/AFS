@@ -18,6 +18,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Sardine Android is distributed only through JitPack.
+        maven("https://jitpack.io") {
+            content {
+                includeModule("com.github.thegrizzlylabs", "sardine-android")
+            }
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.storyteller_f.file_system_remote.instance
 
 import android.net.Uri
+import com.storyteller_f.file_system.bit
 import com.storyteller_f.file_system.getExtension
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileInstance
@@ -10,7 +11,6 @@ import com.storyteller_f.file_system.instance.FileTime
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.model.FileSystemPack
 import com.storyteller_f.file_system_remote.RemoteSpec
-import com.storyteller_f.slim_ktx.bit
 import net.schmizz.sshj.AndroidConfig
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.sftp.FileAttributes

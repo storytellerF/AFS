@@ -1,6 +1,6 @@
 package com.storyteller_f.file_system.instance
 
-import com.storyteller_f.slim_ktx.bit
+import com.storyteller_f.file_system.bit
 
 class FilePermission(
     val executable: Boolean = false,

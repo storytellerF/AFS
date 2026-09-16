@@ -18,8 +18,6 @@ configurations.all {
 }
 dependencies {
     implementation(libs.androidx.annotation)
-    implementation(libs.common.ktx)
-    implementation(libs.slim.ktx)
     implementation(project(":file-system"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,7 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
 pluginManagement {
-    includeBuild("common-publish")
     repositories {
         google {
             content {
@@ -12,27 +11,13 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven { setUrl("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        maven {
-            name = "github"
-            url = uri("https://maven.pkg.github.com/storytellerF/common-ui-list")
-            credentials {
-                // 需要配置在~/.gradle/gradle.properties
-                username = providers.gradleProperty("gpr.user").get()
-                password = providers.gradleProperty("gpr.key").get()
-            }
-            mavenContent {
-                includeGroupAndSubgroups("com.storyteller_f.common_ui_list")
-            }
-        }
         mavenCentral()
-        maven { setUrl("https://jitpack.io") }
     }
 }
 
@@ -47,3 +32,4 @@ include(":file-system-memory")
 include(":file-system-local")
 include(":file-system-archive")
 includeBuild("bgscripts")
+includeBuild("common-publish")

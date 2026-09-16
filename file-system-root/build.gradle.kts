@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
 
-    id("common-publish")
+    id("android-common-publish")
 
     id("common-library")
 }

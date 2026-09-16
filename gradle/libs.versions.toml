@@ -42,7 +42,6 @@ androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", versi
 common-ktx = { module = "com.storyteller_f.common_ui_list:common-ktx", version.ref = "commonUiList" }
 common-ui-list-slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx", version.ref = "commonUiList" }
 compat-ktx = { module = "com.storyteller_f.common_ui_list:compat-ktx", version.ref = "commonUiList" }
-github-slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx" }
 slim-ktx = { module = "com.storyteller_f.common_ui_list:slim-ktx" }
 commons-net = { module = "commons-net:commons-net", version.ref = "commonsNet" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

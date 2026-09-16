@@ -3,7 +3,7 @@ plugins {
 
     id("com.google.devtools.ksp")
 
-    id("common-publish")
+    id("android-common-publish")
     id("common-library")
 }
 
@@ -12,7 +12,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.github.slim.ktx)
+    implementation(libs.common.ui.list.slim.ktx)
     implementation(libs.compat.ktx)
     implementation(project(":file-system"))
     implementation(libs.androidx.core.ktx)

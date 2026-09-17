@@ -13,7 +13,7 @@ android {
 
 configurations.all {
     resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
-        select("com.google.guava:guava:0")
+        select("com.google.guava:guava:23.0")
     }
 }
 dependencies {

@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.googleKsp) apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
-    id("org.jetbrains.kotlinx.kover") version "0.9.8"
+    id("org.jetbrains.kotlinx.kover") version "0.9.9"
     id("com.starter.easylauncher") version ("6.2.0") apply false
 }
 
@@ -59,7 +59,7 @@ fun Project.setupDetekt() {
             baseline = file("$rootDir/config/detekt/baseline.xml")
         }
         dependencies {
-            val detektVersion = "1.23.1"
+            val detektVersion = "1.23.8"
 
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
             detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-libraries:$detektVersion")
@@ -108,7 +108,7 @@ fun Project.setupKover(
 
         dependencies {
             if (androidLibModules.contains(name)) {
-                val robolectricVersion = "4.11.1"
+                val robolectricVersion = "4.17"
                 "testImplementation"("org.robolectric:robolectric:$robolectricVersion")
             }
         }

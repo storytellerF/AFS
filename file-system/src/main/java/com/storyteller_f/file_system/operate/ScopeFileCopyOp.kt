@@ -1,10 +1,10 @@
 package com.storyteller_f.file_system.operate
 
 import android.content.Context
+import com.storyteller_f.file_system.exceptionMessage
 import com.storyteller_f.file_system.instance.FileCreatePolicy.Create
 import com.storyteller_f.file_system.instance.FileCreatePolicy.NotCreate
 import com.storyteller_f.file_system.instance.FileInstance
-import com.storyteller_f.file_system.exceptionMessage
 import com.storyteller_f.file_system.message.Message
 import com.storyteller_f.file_system.model.FileInfo
 import com.storyteller_f.file_system.size
@@ -102,7 +102,7 @@ open class ScopeFileCopyOp(
                 )
             )
         }
-        notifyDirectoryDone(fileInstance, Message("${f.name} success"), 0)
+        notifyDirectoryDone(f, Message("${f.name} success"), 0)
         return true
     }
 
@@ -111,18 +111,20 @@ open class ScopeFileCopyOp(
     }
 
     open suspend fun notifyFileDone(f: FileInstance, message: Message, fileLength: Long, i: Int) {
-        onFileDone(fileInstance, message, fileLength)
+        onFileDone(f, message, fileLength)
     }
 
     private suspend fun copyFileFaster(f: FileInstance, t: FileInstance): Boolean {
         try {
             val toChild = t.toChildEfficiently(context, f.name, Create(true))
+            val fileLength = f.size()
             f.getFileInputStream().channel.use { int ->
                 (toChild).getFileOutputStream().channel.use { out ->
-                    copyFileInternal(int, out, f)
-                    return true
+                    copyFileInternal(int, out)
                 }
             }
+            notifyFileDone(f, Message(""), fileLength, 0)
+            return true
         } catch (e: Exception) {
             onError(Message(e.message ?: "error"))
         }
@@ -131,8 +133,7 @@ open class ScopeFileCopyOp(
 
     private suspend fun copyFileInternal(
         int: FileChannel,
-        out: FileChannel,
-        f: FileInstance
+        out: FileChannel
     ) {
         withContext(Dispatchers.IO) {
             val byteBuffer = ByteBuffer.allocateDirect(DEFAULT_BUFFER_SIZE)
@@ -142,7 +143,6 @@ open class ScopeFileCopyOp(
                 out.write(byteBuffer)
                 byteBuffer.clear()
             }
-            notifyFileDone(f, Message(""), f.size(), 0)
         }
     }
 }

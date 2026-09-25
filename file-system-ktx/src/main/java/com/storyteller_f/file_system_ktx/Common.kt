@@ -1,5 +1,6 @@
 package com.storyteller_f.file_system_ktx
 
+import android.content.pm.PackageManager
 import android.widget.ImageView
 import com.storyteller_f.file_system.model.FileInfo
 
@@ -13,8 +14,12 @@ val FileInfo.isDirectory get() = kind.isDirectory
 fun ImageView.fileIcon(fileInfo: FileInfo) {
     if (fileInfo.isFile) {
         if (fileInfo.fullPath.startsWith("/data/app/")) {
-            setImageDrawable(context.packageManager.getApplicationIcon(fileInfo.name))
-            return
+            try {
+                setImageDrawable(context.packageManager.getApplicationIcon(fileInfo.name))
+                return
+            } catch (_: PackageManager.NameNotFoundException) {
+                // The package may have been removed while its file entry is still visible.
+            }
         }
         val extension = fileInfo.extension!!
         if (extension.isNotEmpty()) {

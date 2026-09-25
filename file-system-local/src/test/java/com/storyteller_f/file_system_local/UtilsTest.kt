@@ -57,7 +57,10 @@ class UtilsTest {
         assertEquals(LocalFileSystemPrefix.SelfPrimary, getLocalFileSystemPrefix(context, "/storage/self/primary/DCIM"))
         assertEquals(LocalFileSystemPrefix.EmulatedRoot, getLocalFileSystemPrefix(context, "/storage/emulated"))
         assertEquals(LocalFileSystemPrefix.Storage, getLocalFileSystemPrefix(context, "/storage"))
-        assertEquals(LocalFileSystemPrefix.Mounted("/storage/ABCD-1234"), getLocalFileSystemPrefix(context, "/storage/ABCD-1234/DCIM"))
+        assertEquals(
+            LocalFileSystemPrefix.Mounted("/storage/ABCD-1234"),
+            getLocalFileSystemPrefix(context, "/storage/ABCD-1234/DCIM")
+        )
         assertEquals(LocalFileSystemPrefix.Root, getLocalFileSystemPrefix(context, "/"))
         assertEquals(LocalFileSystemPrefix.Data, getLocalFileSystemPrefix(context, "/data"))
         assertEquals(LocalFileSystemPrefix.Data2, getLocalFileSystemPrefix(context, "/data/data"))

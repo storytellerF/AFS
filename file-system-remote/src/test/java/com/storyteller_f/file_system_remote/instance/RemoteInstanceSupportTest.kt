@@ -46,7 +46,9 @@ class RemoteInstanceSupportTest {
         assertThrows(NotImplementedError::class.java) { runBlocking { instance.deleteFileOrEmptyDirectory() } }
         assertThrows(NotImplementedError::class.java) { runBlocking { instance.rename("new") } }
         assertThrows(NotImplementedError::class.java) { runBlocking { instance.toParent() } }
-        assertThrows(NotImplementedError::class.java) { runBlocking { instance.toChild("child", FileCreatePolicy.NotCreate) } }
+        assertThrows(
+            NotImplementedError::class.java
+        ) { runBlocking { instance.toChild("child", FileCreatePolicy.NotCreate) } }
     }
 
     @Test

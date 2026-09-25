@@ -2,11 +2,9 @@ package com.storyteller_f.file_system_archive
 
 import android.net.Uri
 import com.storyteller_f.file_system.getFileInstance
-import com.storyteller_f.file_system.instance.FileCreatePolicy
 import com.storyteller_f.file_system.instance.FileKind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue

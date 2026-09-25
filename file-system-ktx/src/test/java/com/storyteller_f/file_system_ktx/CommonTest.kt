@@ -1,7 +1,7 @@
 package com.storyteller_f.file_system_ktx
 
-import android.net.Uri
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.widget.ImageView
 import com.storyteller_f.file_system.instance.FileKind
 import com.storyteller_f.file_system.instance.FilePermissions
@@ -133,7 +133,7 @@ class CommonTest {
     }
 
     @Test
-    fun testFileIconUsesApplicationIconForInstalledAppPath() {
+    fun testFileIconFallsBackWhenAppPackageIsUnavailable() {
         val context = org.robolectric.RuntimeEnvironment.getApplication()
         val imageView = MockImageView(context)
         val packageName = context.packageName
@@ -146,6 +146,6 @@ class CommonTest {
             )
         )
 
-        assertEquals(0, imageView.lastResId)
+        assertEquals(R.drawable.ic_binary, imageView.lastResId)
     }
 }

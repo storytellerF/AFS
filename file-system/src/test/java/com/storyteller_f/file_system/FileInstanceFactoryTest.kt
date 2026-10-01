@@ -23,6 +23,10 @@ class FileInstanceFactoryTest {
 
     @Before
     fun setup() {
+        // Startup's singleton can outlive Robolectric's application between tests.
+        AppInitializer::class.java.getDeclaredField("sInstance").apply {
+            isAccessible = true
+        }.set(null, null)
         // Robolectric does not automatically create manifest content providers.
         Robolectric.buildContentProvider(InitializationProvider::class.java).create()
         TestFileInstanceFactory.reset()

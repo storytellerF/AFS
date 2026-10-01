@@ -50,7 +50,7 @@ class HttpTest {
 
         val uri = Uri.parse("http://localhost:${server.port}/test.text")
         runBlocking {
-            val httpFileInstance = getFileInstance(appContext, uri)!!
+            val httpFileInstance = getFileInstance(uri)!!
             httpFileInstance.getInputStream().bufferedReader().use {
                 val readText = it.readText()
                 assertEquals("hello world", readText)

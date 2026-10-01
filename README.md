@@ -64,7 +64,8 @@ import android.net.Uri
 import com.storyteller_f.file_system.getFileInstance
 
 val uri = Uri.parse("file:///sdcard/Download/demo.txt")
-val file = getFileInstance(context, uri)
+// application context 由 AndroidX Startup 自动初始化，无需传入 Context。
+val file = getFileInstance(uri)
 ```
 
 读取文件信息和目录列表：
@@ -90,7 +91,7 @@ val child = file?.toChild(
 ```kotlin
 import com.storyteller_f.file_system.toChildEfficiently
 
-val child = file?.toChildEfficiently(context, "nested")
+val child = file?.toChildEfficiently("nested")
 ```
 
 远程文件 URI 示例：
@@ -103,7 +104,7 @@ webdav://user:password@example.com/path/to/file.txt
 https://example.com/file.txt
 ```
 
-ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当当前 `FileInstance` 是 `.zip` 文件时，`toChildEfficiently(context, name)` 会尝试进入归档内容。
+ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当当前 `FileInstance` 是 `.zip` 文件时，`toChildEfficiently(name)` 会尝试进入归档内容。
 
 ## 构建与测试
 
@@ -161,3 +162,9 @@ ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当�
 - 如需接入 NIO `FileSystemProvider`，同时在 `src/main/resources/META-INF/services/java.nio.file.spi.FileSystemProvider` 中注册。
 - Android 本地存储路径在不同系统版本上行为不同，修改 `file-system-local` 后建议同时运行本地单元测试和 Android instrumentation 测试。
 - `file-system-remote` 的部分测试依赖 Testcontainers 和网络服务模拟环境。
+
+### Context 初始化
+
+`file-system` 通过 AndroidX Startup 自动保存 application context。`getFileInstance(uri, policy)`、`getFileSystemPrefix(uri)`、`toChildEfficiently(name, policy)` 和 `toParentEfficiently()` 均无需传入 Context；旧调用需删除 Context 参数。工厂接口仍接收由核心模块提供的 application context。
+
+如果宿主禁用了 Startup 自动初始化，请在首次访问文件前调用 `AppInitializer.getInstance(context).initializeComponent(FileSystemInitializer::class.java)`。其他 Startup initializer 如果需要访问 AFS，应将 `FileSystemInitializer::class.java` 加入其 `dependencies()`。

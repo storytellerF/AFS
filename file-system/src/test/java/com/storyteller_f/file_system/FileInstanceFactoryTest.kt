@@ -1,6 +1,8 @@
 package com.storyteller_f.file_system
 
+import android.content.ContextWrapper
 import android.net.Uri
+import androidx.startup.AppInitializer
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -23,6 +25,19 @@ class FileInstanceFactoryTest {
     }
 
     @Test
+    fun startupAutomaticallyInitializesApplicationContext() {
+        assertTrue(AppInitializer.getInstance(context).isEagerlyInitialized(FileSystemInitializer::class.java))
+        assertSame(context, FileSystemInitializer.applicationContext)
+    }
+
+    @Test
+    fun initializerStoresApplicationContextInsteadOfWrapper() {
+        val wrapper = ContextWrapper(context)
+        assertSame(context, FileSystemInitializer().create(wrapper))
+        assertSame(context, FileSystemInitializer.applicationContext)
+    }
+
+    @Test
     fun getFileInstanceNormalizesPathAndAppliesCreatePolicy() = runBlocking {
         val uri = Uri.Builder()
             .scheme(TestFileInstanceFactory.SCHEME)
@@ -30,8 +45,9 @@ class FileInstanceFactoryTest {
             .path("/root/./docs/../file.txt")
             .build()
 
-        val instance = getFileInstance(context, uri, FileCreatePolicy.Create(true))!!
+        val instance = getFileInstance(uri, FileCreatePolicy.Create(true))!!
 
+        assertSame(context, TestFileInstanceFactory.receivedContext)
         assertEquals("/root/file.txt", instance.path)
         assertTrue(instance.exists())
         assertTrue(instance.fileKind().isFile)
@@ -45,22 +61,21 @@ class FileInstanceFactoryTest {
             .path("/root")
             .build()
 
-        assertEquals(TestFileInstanceFactory.TestPrefix("main"), getFileSystemPrefix(context, uri))
-        assertNull(getFileSystemPrefix(context, Uri.Builder().scheme("missing").path("/root").build()))
+        assertEquals(TestFileInstanceFactory.TestPrefix("main"), getFileSystemPrefix(uri))
+        assertNull(getFileSystemPrefix(Uri.Builder().scheme("missing").path("/root").build()))
     }
 
     @Test
     fun toChildEfficientlyHandlesSpecialNamesAndSamePrefixChildren() = runBlocking {
         val instance = getFileInstance(
-            context,
             Uri.Builder().scheme(TestFileInstanceFactory.SCHEME).authority("main").path("/root").build(),
             FileCreatePolicy.Create(false)
         )!!
 
-        assertSame(instance, instance.toChildEfficiently(context, "."))
-        assertEquals("/", instance.toChildEfficiently(context, "..").path)
+        assertSame(instance, instance.toChildEfficiently("."))
+        assertEquals("/", instance.toChildEfficiently("..").path)
 
-        val child = instance.toChildEfficiently(context, "child.txt", FileCreatePolicy.Create(true))
+        val child = instance.toChildEfficiently("child.txt", FileCreatePolicy.Create(true))
         assertEquals("/root/child.txt", child.path)
         assertTrue(child.exists())
         assertTrue(child.fileKind().isFile)
@@ -69,12 +84,11 @@ class FileInstanceFactoryTest {
     @Test
     fun toChildEfficientlyBuildsNestedInstanceForFiles() = runBlocking {
         val zip = getFileInstance(
-            context,
             Uri.Builder().scheme(TestFileInstanceFactory.SCHEME).authority("main").path("/archive.zip").build(),
             FileCreatePolicy.Create(true)
         )!!
 
-        val nested = zip.toChildEfficiently(context, "entry.txt")
+        val nested = zip.toChildEfficiently("entry.txt")
 
         assertEquals(TestFileInstanceFactory.NESTED_SCHEME, nested.uri.scheme)
         assertEquals("/entry.txt", nested.path)

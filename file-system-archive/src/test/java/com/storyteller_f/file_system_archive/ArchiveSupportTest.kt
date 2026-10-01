@@ -35,8 +35,8 @@ class ArchiveSupportTest {
         val factory = ArchiveFileInstanceFactory()
         val zipFile = context.buildZip("nested.zip", listOf(Node("hello.txt", content = "hello")))
         val textFile = context.buildZip("not_zip.txt", listOf(Node("hello.txt", content = "hello")))
-        val zipInstance = getFileInstance(context, zipFile.toArchiveTestUri())!!
-        val textInstance = getFileInstance(context, textFile.toArchiveTestUri())!!
+        val zipInstance = getFileInstance(zipFile.toArchiveTestUri())!!
+        val textInstance = getFileInstance(textFile.toArchiveTestUri())!!
 
         assertEquals(ArchiveFileInstance.SCHEME, factory.buildNestedFile(context, null, zipInstance)!!.scheme)
         assertNull(factory.buildNestedFile(context, null, textInstance))
@@ -74,7 +74,6 @@ class ArchiveSupportTest {
         val archive = runBlocking {
             val zipFile = context.buildZip("readonly.zip", listOf(Node("hello.txt", content = "hello")))
             getFileInstance(
-                context,
                 ArchiveFileInstanceFactory.buildNestedFile(zipFile.toArchiveTestUri(), "/hello.txt")!!
             )!!
         }

@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestForSdcard(path: Uri) {
         val context = this
         lifecycleScope.launch {
-            val prefix = getFileSystemPrefix(context, path) as LocalFileSystemPrefix
+            val prefix = getFileSystemPrefix(path) as LocalFileSystemPrefix
             val input = generateSAFRequestIntent(prefix) ?: return@launch
             registerForActivityResult(
                 ActivityResultContracts.StartActivityForResult()
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestForEmulatedSAF(path: Uri) {
         val context = this
         lifecycleScope.launch {
-            val prefix = getFileSystemPrefix(context, path) as LocalFileSystemPrefix
+            val prefix = getFileSystemPrefix(path) as LocalFileSystemPrefix
             val input = generateSAFRequestIntent(prefix) ?: return@launch
             registerForActivityResult(
                 ActivityResultContracts.StartActivityForResult()

@@ -24,21 +24,20 @@ class ScopeFileMoveOpInShellTest {
         val userDataUri = File(currentUserDataPath).toUri()
 
         runBlocking {
-            val userData = getFileInstance(context, userDataUri)!!
+            val userData = getFileInstance(userDataUri)!!
             val pack = userData.list()
             val userPackageModel = pack.directories.first()
             val userPackage = userData.toChildEfficiently(
-                context,
                 userPackageModel.name,
             )
 
-            val filesInstance = userPackage.toChildEfficiently(context, "files", FileCreatePolicy.Create(false))
+            val filesInstance = userPackage.toChildEfficiently("files", FileCreatePolicy.Create(false))
 
             //在cache 下面创建一个文件
             val cacheInstance =
-                userPackage.toChildEfficiently(context, "cache")
+                userPackage.toChildEfficiently("cache")
             val testFile =
-                cacheInstance.toChildEfficiently(context, "test.txt", FileCreatePolicy.Create(true))
+                cacheInstance.toChildEfficiently("test.txt", FileCreatePolicy.Create(true))
             testFile.getFileOutputStream().bufferedWriter().use {
                 it.write("hello world")
             }
@@ -46,7 +45,7 @@ class ScopeFileMoveOpInShellTest {
             assertTrue(ScopeFileMoveOpInShell(testFile, filesInstance, context).call())
             //读取移动后的文件
             val readContent =
-                filesInstance.toChildEfficiently(context, "test.txt")
+                filesInstance.toChildEfficiently("test.txt")
                     .getFileInputStream().bufferedReader().use {
                         it.readText()
                     }

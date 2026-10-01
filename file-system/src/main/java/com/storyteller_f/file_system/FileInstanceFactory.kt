@@ -65,11 +65,10 @@ interface FileInstanceFactory2 : FileInstanceFactory {
 
 @Suppress("unused")
 suspend fun getFileInstance(
-    context: Context,
     uri: Uri,
     policy: FileCreatePolicy = FileCreatePolicy.NotCreate
 ) = getFactory(uri) { safeUri ->
-    buildInstance(context, safeUri)
+    buildInstance(FileSystemInitializer.applicationContext, safeUri)
 }?.apply {
     if (policy is FileCreatePolicy.Create && !exists()) {
         if (policy.isFile) {
@@ -81,10 +80,9 @@ suspend fun getFileInstance(
 }
 
 suspend fun getFileSystemPrefix(
-    context: Context,
     uri: Uri,
 ) = getFactory(uri) { safeUri ->
-    getPrefix(context, safeUri)
+    getPrefix(FileSystemInitializer.applicationContext, safeUri)
 }
 
 suspend fun <R> getFactory(uri: Uri, block: suspend FileInstanceFactory.(Uri) -> R?): R? {
@@ -105,7 +103,6 @@ suspend fun <R> getFactory(uri: Uri, block: suspend FileInstanceFactory.(Uri) ->
  */
 @Throws(Exception::class)
 suspend fun FileInstance.toChildEfficiently(
-    context: Context,
     name: String,
     policy: FileCreatePolicy = FileCreatePolicy.NotCreate
 ): FileInstance {
@@ -116,14 +113,14 @@ suspend fun FileInstance.toChildEfficiently(
         return this
     }
     if (name == "..") {
-        return toParentEfficiently(context)
+        return toParentEfficiently()
     }
     if (fileKind().isFile) {
         val uri1 = getFactory(uri) {
-            buildNestedFile(context, name, this@toChildEfficiently)
+            buildNestedFile(FileSystemInitializer.applicationContext, name, this@toChildEfficiently)
         }
         if (uri1 != null) {
-            return getFileInstance(context, uri1)!!
+            return getFileInstance(uri1)!!
         } else {
             throw IllegalAccessException("is file")
         }
@@ -131,27 +128,25 @@ suspend fun FileInstance.toChildEfficiently(
     val path = buildPath(path, name)
     val childUri = uri.buildUpon().path(path).build()
 
-    val currentPrefix = getFileSystemPrefix(context, uri)
-    val childPrefix = getFileSystemPrefix(context, childUri)
+    val currentPrefix = getFileSystemPrefix(uri)
+    val childPrefix = getFileSystemPrefix(childUri)
     return if (currentPrefix == childPrefix) {
         toChild(name, policy)!!
     } else {
-        getFileInstance(context, childUri, policy)!!
+        getFileInstance(childUri, policy)!!
     }
 }
 
 @Throws(Exception::class)
-suspend fun FileInstance.toParentEfficiently(
-    context: Context
-): FileInstance {
+suspend fun FileInstance.toParentEfficiently(): FileInstance {
     val parentPath = parentPath(path)
     val parentUri = uri.buildUpon().path(parentPath).build()
 
-    val parentPrefix = getFileSystemPrefix(context, parentUri)
-    val childPrefix = getFileSystemPrefix(context, uri)
+    val parentPrefix = getFileSystemPrefix(parentUri)
+    val childPrefix = getFileSystemPrefix(uri)
     return if (parentPrefix == childPrefix) {
         toParent()
     } else {
-        getFileInstance(context, parentUri)!!
+        getFileInstance(parentUri)!!
     }
 }

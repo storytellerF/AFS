@@ -46,7 +46,7 @@ class SFtpDockerTest {
         remoteSpec.checkSFtpConnection()
         val uri = remoteSpec.toUri()
         runBlocking {
-            getFileInstance(context, uri)!!.exists()
+            getFileInstance(uri)!!.exists()
         }
     }
 }

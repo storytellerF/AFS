@@ -67,7 +67,7 @@ class AFSPath(val uri: URI, val context: Context, private val provider: FileSyst
     private val scheme: String = uri.scheme!!
     private val authority: String? = uri.authority
     val instance = runBlocking {
-        getFileInstance(context, uri.toUri())
+        getFileInstance(uri.toUri())
     }
 
     override fun compareTo(other: Path?): Int {

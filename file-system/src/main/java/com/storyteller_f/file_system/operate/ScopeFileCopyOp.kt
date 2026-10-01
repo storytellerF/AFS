@@ -77,7 +77,6 @@ open class ScopeFileCopyOp(
             copyDirectoryFaster(
                 fileInstance,
                 target.toChildEfficiently(
-                    context,
                     fileInstance.name,
                     Create(false)
                 )
@@ -89,14 +88,15 @@ open class ScopeFileCopyOp(
         val listSafe = f.list()
         listSafe.files.forEach {
             yield()
-            copyFileFaster(f.toChildEfficiently(context, it.name, Create(true)), t)
+            copyFileFaster(f.toChildEfficiently(
+                    it.name, Create(true)), t)
         }
         listSafe.directories.forEach {
             yield()
             copyDirectoryFaster(
-                f.toChildEfficiently(context, it.name, Create(false)),
+                f.toChildEfficiently(
+                    it.name, Create(false)),
                 t.toChildEfficiently(
-                    context,
                     it.name,
                     Create(false)
                 )
@@ -116,7 +116,7 @@ open class ScopeFileCopyOp(
 
     private suspend fun copyFileFaster(f: FileInstance, t: FileInstance): Boolean {
         try {
-            val toChild = t.toChildEfficiently(context, f.name, Create(true))
+            val toChild = t.toChildEfficiently(f.name, Create(true))
             val fileLength = f.size()
             f.getFileInputStream().channel.use { int ->
                 (toChild).getFileOutputStream().channel.use { out ->
@@ -255,8 +255,7 @@ class FileDeleteOp(
         it: FileInfo
     ): Boolean {
         val childDirectory = fileInstance.toChildEfficiently(
-            context,
-            it.name,
+                    it.name,
             NotCreate
         )
         val deleteDirectory = deleteDirectory(childDirectory)
@@ -272,7 +271,8 @@ class FileDeleteOp(
     }
 
     private suspend fun deleteChildFile(fileInstance: FileInstance, it: FileInfo): Boolean {
-        val childFile = fileInstance.toChildEfficiently(context, it.name, NotCreate)
+        val childFile = fileInstance.toChildEfficiently(
+                    it.name, NotCreate)
         val childFileSize = childFile.size()
         val deleteFileOrEmptyDirectory = childFile.deleteFileOrEmptyDirectory()
         if (deleteFileOrEmptyDirectory) {

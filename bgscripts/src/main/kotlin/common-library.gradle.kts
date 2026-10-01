@@ -31,6 +31,9 @@ android {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
     lint {
         compileSdk = libs.versions.compileSdk.get().toInt()
     }

@@ -8,6 +8,7 @@ commonsNet = "3.13.0"
 gson = "2.14.0"
 jimfs = "1.3.2"
 kotlin = "2.4.20"
+startup = "1.2.0"
 coreKtx = "1.19.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -32,6 +33,7 @@ ksp = "2.3.12"
 testcontainers = "2.0.5"
 
 [libraries]
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
 android-plugin-lib = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
 kotlin-plugin-lib = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

@@ -31,7 +31,6 @@ class ArchiveFileInstanceTest {
                 appContext.buildZip("test.zip", listOf(Node("hello.txt", emptyList(), "hello")))
 
             val archiveFileInstance = getFileInstance(
-                appContext,
                 ArchiveFileInstanceFactory.buildNestedFile(file.toArchiveTestUri(), null)!!
             )!!
             val list = archiveFileInstance.list()
@@ -56,8 +55,8 @@ class ArchiveFileInstanceTest {
             val zipFile =
                 appContext.buildZip("test.zip", listOf(Node("hello.txt", emptyList(), "hello")))
 
-            val fileInstance = getFileInstance(appContext, zipFile.toArchiveTestUri())!!
-            val instance = fileInstance.toChildEfficiently(appContext, "hello.txt")
+            val fileInstance = getFileInstance(zipFile.toArchiveTestUri())!!
+            val instance = fileInstance.toChildEfficiently("hello.txt")
             assertEquals("hello.txt", instance.name)
         }
     }
@@ -78,10 +77,10 @@ class ArchiveFileInstanceTest {
                     writeStream(input, it)
                 }
             }
-            val parentFileInstance = getFileInstance(appContext, parentZip.toArchiveTestUri())!!
-            val instance = parentFileInstance.toChildEfficiently(appContext, "test.zip")
+            val parentFileInstance = getFileInstance(parentZip.toArchiveTestUri())!!
+            val instance = parentFileInstance.toChildEfficiently("test.zip")
             assertEquals("test.zip", instance.name)
-            val textFileInstance = instance.toChildEfficiently(appContext, "hello.txt")
+            val textFileInstance = instance.toChildEfficiently("hello.txt")
             assertEquals("hello.txt", textFileInstance.name)
         }
     }
@@ -107,7 +106,7 @@ class ArchiveFileInstanceTest {
 
             val zipUri = zipFile.toArchiveTestUri()
             val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, null)!!
-            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            val fileInstance = getFileInstance(archiveUri)!!
             val pack = fileInstance.list()
             assertEquals(2, pack.count)
             assertEquals("/hello.txt", pack.files.first().fullPath)
@@ -142,7 +141,7 @@ class ArchiveFileInstanceTest {
 
             val zipUri = zipFile.toArchiveTestUri()
             val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, "/hello/world")!!
-            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            val fileInstance = getFileInstance(archiveUri)!!
             val parentInstance = fileInstance.toParent()
             assertEquals("hello", parentInstance.name)
         }
@@ -162,7 +161,7 @@ class ArchiveFileInstanceTest {
 
             val zipUri = zipFile.toArchiveTestUri()
             val archiveUri = ArchiveFileInstanceFactory.buildNestedFile(zipUri, "/hello")!!
-            val fileInstance = getFileInstance(appContext, archiveUri)!!
+            val fileInstance = getFileInstance(archiveUri)!!
             assertEquals(false, fileInstance.exists())
         }
     }

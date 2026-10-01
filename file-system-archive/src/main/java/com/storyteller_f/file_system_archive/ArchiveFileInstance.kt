@@ -34,7 +34,7 @@ class ArchiveFileInstance(context: Context, uri: Uri) :
     private suspend fun reconnectIfNeed(): FileInstance {
         val root = rootFileInstance
         return if (root == null) {
-            val new = getFileInstance(context, archiveFileUri)!!
+            val new = getFileInstance(archiveFileUri)!!
             rootFileInstance = new
             new
         } else {

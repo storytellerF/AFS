@@ -1,6 +1,8 @@
 package com.storyteller_f.file_system_archive
 
 import android.net.Uri
+import androidx.startup.AppInitializer
+import com.storyteller_f.file_system.FileSystemInitializer
 import com.storyteller_f.file_system.ensureFile
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.instance.FileCreatePolicy
@@ -9,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -21,6 +24,12 @@ import java.util.zip.ZipOutputStream
 
 @RunWith(RobolectricTestRunner::class)
 class ArchiveFileInstanceTest {
+    @Before
+    fun initializeFileSystem() {
+        AppInitializer.getInstance(RuntimeEnvironment.getApplication())
+            .initializeComponent(FileSystemInitializer::class.java)
+    }
+
 
     @Test
     fun testArchiveFileInstance() {

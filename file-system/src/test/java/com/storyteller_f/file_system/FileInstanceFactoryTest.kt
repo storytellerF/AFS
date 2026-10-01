@@ -3,6 +3,7 @@ package com.storyteller_f.file_system
 import android.content.ContextWrapper
 import android.net.Uri
 import androidx.startup.AppInitializer
+import androidx.startup.InitializationProvider
 import com.storyteller_f.file_system.instance.FileCreatePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -12,6 +13,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -21,11 +23,13 @@ class FileInstanceFactoryTest {
 
     @Before
     fun setup() {
+        // Robolectric does not automatically create manifest content providers.
+        Robolectric.buildContentProvider(InitializationProvider::class.java).create()
         TestFileInstanceFactory.reset()
     }
 
     @Test
-    fun startupAutomaticallyInitializesApplicationContext() {
+    fun startupProviderInitializesApplicationContextFromManifest() {
         assertTrue(AppInitializer.getInstance(context).isEagerlyInitialized(FileSystemInitializer::class.java))
         assertSame(context, FileSystemInitializer.applicationContext)
     }

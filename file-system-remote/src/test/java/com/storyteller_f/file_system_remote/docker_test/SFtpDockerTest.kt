@@ -34,7 +34,6 @@ class SFtpDockerTest {
 
     @Test
     fun test() {
-
         val host = container.host
         val port = container.getMappedPort(22)
         val remoteSpec =

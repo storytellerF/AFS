@@ -38,7 +38,6 @@ class WebDavDockerTest {
 
     @Test
     fun test() {
-
         val host = container.host
         val port = container.getMappedPort(8080)
         val remoteSpec =

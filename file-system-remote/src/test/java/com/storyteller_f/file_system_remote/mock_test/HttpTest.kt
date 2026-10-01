@@ -44,7 +44,6 @@ class HttpTest {
     @Config(sdk = [30])
     @Test
     fun test() {
-
         val uri = Uri.parse("http://localhost:${server.port}/test.text")
         runBlocking {
             val httpFileInstance = getFileInstance(uri)!!

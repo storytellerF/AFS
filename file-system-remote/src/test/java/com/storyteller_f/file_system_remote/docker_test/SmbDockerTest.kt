@@ -36,7 +36,6 @@ class SmbDockerTest {
 
     @Test
     fun test() {
-
         val host = container.host
         val port = container.getMappedPort(445)
         val remoteSpec =

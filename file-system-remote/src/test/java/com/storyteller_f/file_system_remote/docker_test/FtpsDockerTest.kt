@@ -36,7 +36,6 @@ class FtpsDockerTest {
 
     @Test
     fun test() {
-
         val host = container.host
         val port = container.getMappedPort(21)
         val remoteSpec =

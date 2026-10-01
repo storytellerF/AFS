@@ -16,6 +16,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.startup.runtime)
     implementation(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.junit)

@@ -7,19 +7,15 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 
-@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class FileInstanceTest {
     @Test
     @Ignore
     fun testFakeEmulatedPath() {
         val uri = Uri.parse("file:///storage/emulated")
-        val context = RuntimeEnvironment.getApplication()
         runBlocking {
-            assert(getFileInstance(context, uri)!!.list().count > 0)
+            assert(getFileInstance(uri)!!.list().count > 0)
         }
     }
 }

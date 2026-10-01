@@ -10,12 +10,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 
-@Config(manifest = Config.NONE, sdk = [21])
+@Config(sdk = [21])
 @RunWith(RobolectricTestRunner::class)
 class WebDavDockerTest {
 
@@ -39,8 +38,6 @@ class WebDavDockerTest {
 
     @Test
     fun test() {
-        val context = RuntimeEnvironment.getApplication()
-
         val host = container.host
         val port = container.getMappedPort(8080)
         val remoteSpec =
@@ -48,7 +45,7 @@ class WebDavDockerTest {
         remoteSpec.checkWebDavConnection()
         val uri = remoteSpec.toUri()
         runBlocking {
-            getFileInstance(context, uri)!!.exists()
+            getFileInstance(uri)!!.exists()
         }
     }
 }

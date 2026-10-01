@@ -14,10 +14,8 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class HttpTest {
     companion object {
@@ -46,11 +44,9 @@ class HttpTest {
     @Config(sdk = [30])
     @Test
     fun test() {
-        val appContext = RuntimeEnvironment.getApplication()
-
         val uri = Uri.parse("http://localhost:${server.port}/test.text")
         runBlocking {
-            val httpFileInstance = getFileInstance(appContext, uri)!!
+            val httpFileInstance = getFileInstance(uri)!!
             httpFileInstance.getInputStream().bufferedReader().use {
                 val readText = it.readText()
                 assertEquals("hello world", readText)

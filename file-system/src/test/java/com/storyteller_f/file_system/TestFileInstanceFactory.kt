@@ -13,6 +13,7 @@ import java.io.FileOutputStream
 
 class TestFileInstanceFactory : FileInstanceFactory {
     override suspend fun buildInstance(context: Context, uri: Uri): FileInstance? {
+        receivedContext = context
         return if (uri.scheme == SCHEME || uri.scheme == NESTED_SCHEME) {
             instances.getOrPut(uri.toString()) { TestServiceFileInstance(uri) }
         } else {
@@ -45,10 +46,12 @@ class TestFileInstanceFactory : FileInstanceFactory {
     companion object {
         const val SCHEME = "test"
         const val NESTED_SCHEME = "test-nested"
+        var receivedContext: Context? = null
         val instances = mutableMapOf<String, TestServiceFileInstance>()
 
         fun reset() {
             instances.clear()
+            receivedContext = null
         }
     }
 }

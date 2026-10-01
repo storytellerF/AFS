@@ -28,7 +28,7 @@ class MemoryFileInstanceTest {
         val uri =
             Uri.Builder().scheme(MemoryFileInstance.SCHEME).authority("test").path("/").build()
         runBlocking {
-            val fileInstance = getFileInstance(appContext, uri)!!
+            val fileInstance = getFileInstance(uri)!!
             assertEquals(1, fileInstance.list().files.count())
             val child = fileInstance.toChild("hello.txt", FileCreatePolicy.NotCreate)!!
             assertEquals("hello", child.getInputStream().bufferedReader().readText())

@@ -31,6 +31,13 @@ android {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        unitTests.all {
+            // Robolectric accesses JDK FileDescriptor internals when loading Android resources.
+            it.jvmArgs("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED")
+        }
+    }
     lint {
         compileSdk = libs.versions.compileSdk.get().toInt()
     }

@@ -28,7 +28,7 @@ class FileInstanceFactoryKtTest {
                 LocalFileSystemPaths.STORAGE_PATH to "/storage"
             ).forEach { (path, expected) ->
                 val prefix =
-                    getFileSystemPrefix(appContext, File(path).toUri()) as LocalFileSystemPrefix
+                    getFileSystemPrefix(File(path).toUri()) as LocalFileSystemPrefix
                 assertEquals(expected, prefix.key)
             }
         }
@@ -57,7 +57,6 @@ class FileInstanceFactoryKtTest {
                         File("/storage/self/primary").listFiles().orEmpty(),
             ).forEach { (it, expected) ->
                 val fileInstance = getFileInstance(
-                    appContext,
                     File(it).toUri(),
                 )!!
                 assertEquals(expected.size, fileInstance.list().count)

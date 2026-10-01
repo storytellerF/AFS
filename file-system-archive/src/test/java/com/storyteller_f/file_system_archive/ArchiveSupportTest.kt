@@ -1,6 +1,8 @@
 package com.storyteller_f.file_system_archive
 
 import android.net.Uri
+import androidx.startup.AppInitializer
+import com.storyteller_f.file_system.FileSystemInitializer
 import com.storyteller_f.file_system.getFileInstance
 import com.storyteller_f.file_system.instance.FileKind
 import kotlinx.coroutines.runBlocking
@@ -8,6 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -16,6 +19,12 @@ import java.util.zip.ZipEntry
 
 @RunWith(RobolectricTestRunner::class)
 class ArchiveSupportTest {
+    @Before
+    fun initializeFileSystem() {
+        AppInitializer.getInstance(RuntimeEnvironment.getApplication())
+            .initializeComponent(FileSystemInitializer::class.java)
+    }
+
     @Test
     fun factoryHandlesSupportedAndUnsupportedInputs() = runBlocking {
         val context = RuntimeEnvironment.getApplication()
@@ -35,8 +44,8 @@ class ArchiveSupportTest {
         val factory = ArchiveFileInstanceFactory()
         val zipFile = context.buildZip("nested.zip", listOf(Node("hello.txt", content = "hello")))
         val textFile = context.buildZip("not_zip.txt", listOf(Node("hello.txt", content = "hello")))
-        val zipInstance = getFileInstance(context, zipFile.toArchiveTestUri())!!
-        val textInstance = getFileInstance(context, textFile.toArchiveTestUri())!!
+        val zipInstance = getFileInstance(zipFile.toArchiveTestUri())!!
+        val textInstance = getFileInstance(textFile.toArchiveTestUri())!!
 
         assertEquals(ArchiveFileInstance.SCHEME, factory.buildNestedFile(context, null, zipInstance)!!.scheme)
         assertNull(factory.buildNestedFile(context, null, textInstance))
@@ -74,7 +83,6 @@ class ArchiveSupportTest {
         val archive = runBlocking {
             val zipFile = context.buildZip("readonly.zip", listOf(Node("hello.txt", content = "hello")))
             getFileInstance(
-                context,
                 ArchiveFileInstanceFactory.buildNestedFile(zipFile.toArchiveTestUri(), "/hello.txt")!!
             )!!
         }

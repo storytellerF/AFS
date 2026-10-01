@@ -30,7 +30,6 @@ class ArchiveFileInstanceTest {
             .initializeComponent(FileSystemInitializer::class.java)
     }
 
-
     @Test
     fun testArchiveFileInstance() {
         val appContext = RuntimeEnvironment.getApplication()

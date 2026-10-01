@@ -10,12 +10,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 
-@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner::class)
 class SFtpDockerTest {
 
@@ -37,7 +34,6 @@ class SFtpDockerTest {
 
     @Test
     fun test() {
-        val context = RuntimeEnvironment.getApplication()
 
         val host = container.host
         val port = container.getMappedPort(22)

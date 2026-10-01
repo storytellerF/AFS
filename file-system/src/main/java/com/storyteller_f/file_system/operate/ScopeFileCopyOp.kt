@@ -88,14 +88,12 @@ open class ScopeFileCopyOp(
         val listSafe = f.list()
         listSafe.files.forEach {
             yield()
-            copyFileFaster(f.toChildEfficiently(
-                    it.name, Create(true)), t)
+            copyFileFaster(f.toChildEfficiently(it.name, Create(true)), t)
         }
         listSafe.directories.forEach {
             yield()
             copyDirectoryFaster(
-                f.toChildEfficiently(
-                    it.name, Create(false)),
+                f.toChildEfficiently(it.name, Create(false)),
                 t.toChildEfficiently(
                     it.name,
                     Create(false)
@@ -255,7 +253,7 @@ class FileDeleteOp(
         it: FileInfo
     ): Boolean {
         val childDirectory = fileInstance.toChildEfficiently(
-                    it.name,
+            it.name,
             NotCreate
         )
         val deleteDirectory = deleteDirectory(childDirectory)
@@ -271,8 +269,7 @@ class FileDeleteOp(
     }
 
     private suspend fun deleteChildFile(fileInstance: FileInstance, it: FileInfo): Boolean {
-        val childFile = fileInstance.toChildEfficiently(
-                    it.name, NotCreate)
+        val childFile = fileInstance.toChildEfficiently(it.name, NotCreate)
         val childFileSize = childFile.size()
         val deleteFileOrEmptyDirectory = childFile.deleteFileOrEmptyDirectory()
         if (deleteFileOrEmptyDirectory) {

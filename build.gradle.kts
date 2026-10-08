@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.googleKsp) apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
     id("com.starter.easylauncher") version ("6.2.0") apply false
 }
 

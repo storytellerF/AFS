@@ -158,6 +158,8 @@ ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当�
 
 ## 开发说明
 
+并行构建、Detekt 写入边界及验证流程见 [DEVELOPMENT.md](DEVELOPMENT.md)。
+
 - 新增文件系统实现时，实现 `FileInstanceFactory` 或 `FileInstanceFactory2`，并在 `src/main/resources/META-INF/services/com.storyteller_f.file_system.FileInstanceFactory` 中注册。
 - 如需接入 NIO `FileSystemProvider`，同时在 `src/main/resources/META-INF/services/java.nio.file.spi.FileSystemProvider` 中注册。
 - Android 本地存储路径在不同系统版本上行为不同，修改 `file-system-local` 后建议同时运行本地单元测试和 Android instrumentation 测试。

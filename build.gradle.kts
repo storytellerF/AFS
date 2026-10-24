@@ -54,9 +54,12 @@ fun Project.setupDetekt() {
                 io.gitlab.arturbosch.detekt.extensions.DetektExtension.DEFAULT_TEST_SRC_DIR_KOTLIN,
             )
             buildUponDefaultConfig = true
-            autoCorrect = true
+            // Analysis must not rewrite sources while compilation runs in parallel.
+            // Run explicit --auto-correct tasks separately from builds and tests.
+            autoCorrect = false
             config.setFrom("$rootDir/config/detekt/detekt.yml")
-            baseline = file("$rootDir/config/detekt/baseline.xml")
+            // Baseline generation replaces its output, so each module owns its file.
+            baseline = file("$rootDir/config/detekt/baselines/$name.xml")
         }
         dependencies {
             val detektVersion = "1.23.8"
@@ -78,6 +81,8 @@ fun Project.setupDetekt() {
             finalizedBy(detektReportMergeSarif)
         }
         detektReportMergeSarif {
+            // A finalizer of one module must also wait for other scheduled analyses.
+            mustRunAfter(tasks.withType<Detekt>())
             input.from(
                 tasks.withType<Detekt>().map { it.sarifReportFile })
         }

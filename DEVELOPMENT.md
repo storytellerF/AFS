@@ -24,6 +24,48 @@ Detekt 添加变体后缀。仓库原先没有共享 baseline 文件，因此无
 设备、固定端口、共享可写目录仍需单独互斥；模块并行设置不提供跨 Gradle 调用的锁。
 常规单测沿用远程模块对 `docker_test`、`mock_test` 的排除配置，不增加测试进程数。
 
+## SARIF 与 Gradle 弃用警告复查
+
+```shell
+./gradlew detekt --warning-mode all --stacktrace --configuration-cache --configuration-cache-problems=fail
+./gradlew detekt --rerun-tasks --warning-mode all --stacktrace --configuration-cache --configuration-cache-problems=fail
+```
+
+首轮应成功存储配置缓存，第二轮应显示 `Configuration cache entry reused`。
+`--rerun-tasks` 确保实际执行分析和合并，而不是只检查 UP-TO-DATE 状态。
+合并任务通过显式 `tasks.register<ReportMergeTask>` 返回的 Provider 懒配置，
+在本次任务图中各模块分析之后执行。检查七个模块的 `build/reports/detekt/detekt.sarif`
+及根目录的 `build/reports/detekt/merge.sarif`：均应为 SARIF 2.1.0，合并结果应包含
+各模块的结果。不要仅凭缓存命中时没有警告就认定弃用问题已消失；需要重新配置时
+可用 `--no-configuration-cache --warning-mode all --stacktrace` 检查。
+
+2026-10-25 使用 Gradle 9.8.1 核对：项目的 `registering(Type::class)` 委托警告已修复；
+仍有以下第三方插件内部调用（由警告调用栈定位）：
+
+| 弃用 API | 来源 | 计划移除版本 |
+| --- | --- | --- |
+| `ReportingExtension.file(String)` | Detekt 1.23.8，`DetektPlugin.apply` | Gradle 10 |
+| `Configuration.setVisible(boolean)` | Detekt 1.23.8、AGP 9.4.1、KSP 2.3.12、Kover 0.9.11 | Gradle 11 |
+
+这些警告仍需插件升级解决，不应通过关闭警告隐藏，也不能据此宣称已兼容 Gradle 10。
+当前 Publish workflow 不再调用历史日志中的 `sdkmanager` 步骤。
+发布任务图可用以下命令检查；这不执行上传、签名或验证远程发布：
+
+```shell
+./gradlew publishAllPublicationsToMavenCentralRepository --dry-run --warning-mode all --stacktrace --configuration-cache --configuration-cache-problems=fail
+./gradlew publishAllPublicationsToMavenCentralRepository --dry-run --warning-mode all --stacktrace --configuration-cache --configuration-cache-problems=fail
+```
+
+2026-10-25 发布预演已通过：首轮存储配置缓存，第二轮复用配置缓存，
+两轮的 241 个待执行任务一致且全部 SKIPPED，包括六个发布模块的签名和上传任务。
+另加 `--offline` 的预演也成功存储配置缓存。未执行实际签名、上传或远程发布验证。
+
+此前阻塞来自 `org.jetbrains.dokka:analysis-kotlin-descriptors:2.2.0` 的大文件下载
+（85,354,458 字节），不是已确认的配置缓存兼容性问题。Maven Central 返回 HTTP 200；
+等待 Gradle 完成下载并核对 JAR 的 SHA-1 后，原先
+`:file-system:javaDocReleaseGeneration` 的缓存序列化失败消失。
+遇到同类问题，先用 `--info` 检查下载 URL 及进度；离线模式要求该任务图的依赖已完整缓存。
+
 ## 完整宿主验证
 
 ```shell

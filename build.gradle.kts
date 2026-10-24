@@ -41,7 +41,7 @@ tasks.withType<Test> {
 }
 
 fun Project.setupDetekt() {
-    val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
+    val detektReportMergeSarif = tasks.register<ReportMergeTask>("detektReportMergeSarif") {
         output = layout.buildDirectory.file("reports/detekt/merge.sarif")
     }
     subprojects {
@@ -80,7 +80,7 @@ fun Project.setupDetekt() {
             basePath = rootDir.absolutePath
             finalizedBy(detektReportMergeSarif)
         }
-        detektReportMergeSarif {
+        detektReportMergeSarif.configure {
             // A finalizer of one module must also wait for other scheduled analyses.
             mustRunAfter(tasks.withType<Detekt>())
             input.from(

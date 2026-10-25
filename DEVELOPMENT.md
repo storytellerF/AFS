@@ -30,6 +30,36 @@ Gradle 步骤耗时；缓存体积记录所有条目的合计。热运行指新 
 runner 时间约等于该 job 的完整耗时；PR 原有验证数量不变。具体费用取决于仓库
 可见性和账户额度，不将 runner 分钟直接视为付费分钟。
 
+### Issue #17 实测（2026-10-25）
+
+上游没有写权限，因此在公开 fork `AgentStart1/AFS` 验证；启用该 fork 原先关闭的
+Actions 后，缓存列表为零。以下均使用 `ubuntu-latest`、JDK 21、Gradle Wrapper
+9.8.1 和相同的 `detekt testDebugUnitTest assembleDebug` 任务，三次均成功。
+配置提交为 `9366dc8`；PR 仅追加测量说明，没有改变构建或缓存配置。
+
+| 场景 | 完整 job | Gradle 步骤 | 恢复 / 保存条目 | 运行记录 |
+| --- | --- | --- | --- | --- |
+| main 冷运行 | 307 秒 | 287 秒 | 0 / 1 | [attempt 1](https://github.com/AgentStart1/AFS/actions/runs/40157194448/attempts/1) |
+| main 热运行，新 runner | 142 秒 | 113 秒 | 1 / 0 | [attempt 2](https://github.com/AgentStart1/AFS/actions/runs/40157194448/attempts/2) |
+| 缓存生成后创建的新 PR | 158 秒 | 142 秒 | 1 / 0，只读 | [PR 验证](https://github.com/AgentStart1/AFS/actions/runs/40157559002) |
+
+冷运行日志显示 `Entry not restored: no match found` 和 `Entry saved`；
+热运行与 PR 均显示 `Entry restored: exact match found`，恢复 key 与冷运行保存
+key 相同。PR 的 Setup Gradle 输入为 `cache-read-only: true`，结束日志显示
+`Entry not saved: cache is read-only`。热运行不再保存是因为同 key 条目已经存在。
+
+缓存 API 在冷运行后和 PR 完成后均返回同一个条目（ID `9465497160`），作用域为
+`refs/heads/main`，体积合计 **1,251,071,952 字节（约 1.17 GiB）**；没有
+`refs/pull/*` 条目。`basic` provider 的 key 前缀为 `setup-java-Linux-x64-gradle-`，
+这是 provider 自身的实现，并非另外启用了 `setup-java` 缓存。
+
+这组样本中，每个 main push 新增的 runner 时间为冷运行约 5.12 分钟、热运行
+约 2.37 分钟；三次验收共用 607 秒（约 10.12 runner 分钟，不含排队）。公开仓库
+使用标准 GitHub-hosted runner 的运行时间免费，当前约 1.17 GiB 缓存也低于每仓库
+10 GiB 的免费缓存额度，见 [GitHub Actions 计费说明](https://docs.github.com/en/billing/concepts/product-billing/github-actions)。
+这些耗时为单次实测，不能承诺后续每次 push 都有相同收益。上游合并后仍需检查其
+首次 main 运行和后续 PR；fork 的缓存不会直接迁移到上游仓库。
+
 ## 模块并行与共享资源
 
 `org.gradle.parallel=true` 允许独立模块并行执行；不额外设置 worker 数或单测

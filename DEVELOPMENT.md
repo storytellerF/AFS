@@ -23,7 +23,10 @@ PR 结束时的只读日志；PR 不应生成 `refs/pull/*` 缓存。无需删�
 用 `gh run view <run-id> --json jobs` 获取步骤时间；需要区分重跑时，使用
 `gh api repos/<owner>/<repo>/actions/runs/<run-id>/attempts/<attempt>/jobs`。
 从 jobs API 的 `started_at` / `completed_at` 记录每次完整 job 耗时，并单独记录
-Gradle 步骤耗时；缓存体积记录当前 provider 所有条目的合计，排除其他 provider 遗留的条目。热运行指新 runner 恢复 User Home，
+Gradle 步骤耗时；缓存体积记录当前 provider 所有条目的合计，排除其他 provider
+遗留的条目。enhanced 会记录入口和依赖、Wrapper 等独立条目，应核对日志中的
+`Restored Key` / `Saved Key`，而非只统计入口条目或仅看请求的 key。
+热运行指新 runner 恢复 User Home，
 并非保留工作区的 UP-TO-DATE 运行。单次冷热样本不能当作稳定性能基准。
 
 新增成本为每次未被取消的 `main` push 执行一个 `ubuntu-latest` 验证 job，

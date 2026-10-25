@@ -20,6 +20,8 @@ PR 运行。检查首次结束时的缓存写入日志、后续 Setup Gradle 的
 PR 结束时的只读日志；PR 不应生成 `refs/pull/*` 缓存。无需删除已有缓存来制造冷运行。
 用 `gh run view <run-id> --log` 查看日志，使用
 `gh api repos/<owner>/<repo>/actions/caches` 核查 `ref`、`key` 和 `size_in_bytes`。
+用 `gh run view <run-id> --json jobs` 获取步骤时间；需要区分重跑时，使用
+`gh api repos/<owner>/<repo>/actions/runs/<run-id>/attempts/<attempt>/jobs`。
 从 jobs API 的 `started_at` / `completed_at` 记录每次完整 job 耗时，并单独记录
 Gradle 步骤耗时；缓存体积记录所有条目的合计。热运行指新 runner 恢复 User Home，
 并非保留工作区的 UP-TO-DATE 运行。单次冷热样本不能当作稳定性能基准。

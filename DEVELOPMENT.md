@@ -3,6 +3,31 @@
 使用 JDK 21、仓库内的 Gradle Wrapper 和 `gradle/libs.versions.toml` 指定的 Android SDK。
 Windows 下将以下命令的 `./gradlew` 换成 `./gradlew.bat`。
 
+## CI Gradle 缓存
+
+Test workflow 在推送 `main` 和面向 `main` 的 PR 上运行
+`./gradlew detekt testDebugUnitTest assembleDebug`。仅 `main` 的 push 可写入缓存；
+PR 和 tag 发布只读取缓存。并发组按 PR 编号或分支 ref 区分，避免不同 PR 和
+`main` 相互取消，同时取消同一组的过时运行。
+
+Test 和 Publish 均使用 `setup-gradle` 的 `basic` provider，将 Gradle User Home
+存入 GitHub Actions 缓存，便于通过仓库缓存列表核查体积与分支作用域。
+继续使用仓库 Wrapper，不安装独立 Gradle，也不额外启用 `setup-java` 缓存。
+此缓存与 Gradle 配置缓存不同；未提供加密密钥，因此不会跨 runner 保存配置缓存。
+
+验证时先记录缓存列表，在没有缓存的 `main` 上运行一次，再重跑一次，并创建新的
+PR 运行。检查首次结束时的缓存写入日志、后续 Setup Gradle 的恢复日志，以及
+PR 结束时的只读日志；PR 不应生成 `refs/pull/*` 缓存。无需删除已有缓存来制造冷运行。
+用 `gh run view <run-id> --log` 查看日志，使用
+`gh api repos/<owner>/<repo>/actions/caches` 核查 `ref`、`key` 和 `size_in_bytes`。
+从 jobs API 的 `started_at` / `completed_at` 记录每次完整 job 耗时，并单独记录
+Gradle 步骤耗时；缓存体积记录所有条目的合计。热运行指新 runner 恢复 User Home，
+并非保留工作区的 UP-TO-DATE 运行。单次冷热样本不能当作稳定性能基准。
+
+新增成本为每次未被取消的 `main` push 执行一个 `ubuntu-latest` 验证 job，
+runner 时间约等于该 job 的完整耗时；PR 原有验证数量不变。具体费用取决于仓库
+可见性和账户额度，不将 runner 分钟直接视为付费分钟。
+
 ## 模块并行与共享资源
 
 `org.gradle.parallel=true` 允许独立模块并行执行；不额外设置 worker 数或单测

@@ -3,6 +3,74 @@
 使用 JDK 21、仓库内的 Gradle Wrapper 和 `gradle/libs.versions.toml` 指定的 Android SDK。
 Windows 下将以下命令的 `./gradlew` 换成 `./gradlew.bat`。
 
+## CI Gradle 缓存
+
+Test workflow 在推送 `main` 和面向 `main` 的 PR 上运行
+`./gradlew detekt testDebugUnitTest assembleDebug`。仅 `main` 的 push 可写入缓存；
+PR 和 tag 发布只读取缓存。并发组按 PR 编号或分支 ref 区分，避免不同 PR 和
+`main` 相互取消，同时取消同一组的过时运行。
+
+Test 和 Publish 保留 `setup-gradle` 默认的 `enhanced` provider，不设置
+`cache-provider`。它将 Gradle User Home 按细粒度条目缓存，并支持去重和清理。
+继续使用仓库 Wrapper，不安装独立 Gradle，也不额外启用 `setup-java` 缓存。
+此缓存与 Gradle 配置缓存不同；未提供加密密钥，因此不会跨 runner 保存配置缓存。
+
+验证时先记录缓存列表，在没有该 provider 缓存的 `main` 上运行一次，再重跑一次，并创建新的
+PR 运行。检查首次结束时的缓存写入日志、后续 Setup Gradle 的恢复日志，以及
+PR 结束时的只读日志；PR 不应生成 `refs/pull/*` 缓存。无需删除已有缓存来制造冷运行。
+用 `gh run view <run-id> --log` 查看日志，使用
+`gh api repos/<owner>/<repo>/actions/caches` 核查 `ref`、`key` 和 `size_in_bytes`。
+用 `gh run view <run-id> --json jobs` 获取步骤时间；需要区分重跑时，使用
+`gh api repos/<owner>/<repo>/actions/runs/<run-id>/attempts/<attempt>/jobs`。
+从 jobs API 的 `started_at` / `completed_at` 记录每次完整 job 耗时，并单独记录
+Gradle 步骤耗时；缓存体积记录当前 provider 所有条目的合计，排除其他 provider
+遗留的条目。enhanced 会记录入口和依赖、Wrapper 等独立条目，应核对日志中的
+`Restored Key` / `Saved Key`，而非只统计入口条目或仅看请求的 key。
+热运行指新 runner 恢复 User Home，
+并非保留工作区的 UP-TO-DATE 运行。单次冷热样本不能当作稳定性能基准。
+
+新增成本为每次未被取消的 `main` push 执行一个 `ubuntu-latest` 验证 job，
+runner 时间约等于该 job 的完整耗时；PR 原有验证数量不变。具体费用取决于仓库
+可见性和账户额度，不将 runner 分钟直接视为付费分钟。
+
+### Issue #17 enhanced 实测（2026-10-25）
+
+在公开 fork `AgentStart1/AFS` 验证默认 enhanced；配置提交为 `7b335f9`，
+两个 workflow 均不设置 `cache-provider`，运行日志显示 `cache-provider: enhanced`。
+开始前没有 enhanced 条目；此前的一个 basic 条目保留，但未用于本次恢复或体积统计。
+三轮均在新的 `ubuntu-latest` runner 上使用 JDK 21、Gradle Wrapper 9.8.1，
+执行相同的 `detekt testDebugUnitTest assembleDebug`，全部成功。
+验证 PR 仅追加缓存核查说明，没有改变构建或缓存配置。
+
+| 场景 | 完整 job | Gradle 步骤 | 恢复 / 保存条目 | 运行记录 |
+| --- | --- | --- | --- | --- |
+| main enhanced 冷运行 | 232 秒 | 214 秒 | 0 / 8 | [attempt 1](https://github.com/AgentStart1/AFS/actions/runs/40158161215/attempts/1) |
+| main 热运行，新 runner | 171 秒 | 136 秒 | 8 / 0 | [attempt 2](https://github.com/AgentStart1/AFS/actions/runs/40158161215/attempts/2) |
+| 缓存生成后创建的新 PR | 137 秒 | 112 秒 | 8 / 0，只读 | [PR 验证](https://github.com/AgentStart1/AFS/actions/runs/40158449290) |
+
+冷运行日志显示 `Gradle User Home cache not found. Will initialize empty.`，
+结束摘要为 `0 restored (0Mb), 8 saved (1192Mb)`。保存的入口 key 为
+`gradle-home-v2|Linux-X64|validate[3beed8b027db7880bb219b74c2544332]-7b335f9fd8b8310c3e0896f275b57aa9cdc06833`。
+main 重跑精确恢复这个入口和其余七个条目；同 key 已存在，因此不再保存。
+
+PR 的请求 key 包含不同的 merge commit，通过 restore-key 前缀匹配恢复上述
+main 入口（`Restored Key` 一致，`partial match found`），其余七个条目精确命中。
+结束摘要为 `8 restored (1192Mb), 0 saved (0Mb)`，Setup Gradle 输入为
+`cache-read-only: true`，日志明确显示
+`Cache is read-only: will not save state for use in subsequent builds`。
+
+缓存 API 在冷运行后及两轮恢复完成后返回相同的条目 ID 集合；其中 enhanced 的
+8 个条目均属于 `refs/heads/main`，合计 **1,249,813,826 字节（约 1.16 GiB）**，
+没有生成 `refs/pull/*` 缓存。该体积不包含旧 basic 条目。
+
+本组样本中，每个 main push 新增的 runner 时间为冷运行约 3.87 分钟、热运行
+约 2.85 分钟；三轮验收合计 540 秒（9 runner 分钟，不含排队）。公开仓库使用
+标准 GitHub-hosted runner 的运行时间免费，当前缓存体积也低于每仓库 10 GiB
+免费缓存额度，见 [GitHub Actions 计费说明](https://docs.github.com/en/billing/concepts/product-billing/github-actions)。
+单次样本不是稳定性能基准，也不能据此比较两个 provider 的性能。
+上游合并后仍需确认其首次 main 写入和后续 PR 恢复；fork 缓存不会跨仓库迁移。
+未执行实际 tag 发布或上传。
+
 ## 模块并行与共享资源
 
 `org.gradle.parallel=true` 允许独立模块并行执行；不额外设置 worker 数或单测

@@ -29,7 +29,7 @@ simplemagic = "1.17"
 sshj = "0.41.2"
 smbj = "0.15.0"
 uiautomator = "2.4.0"
-ksp = "2.3.12"
+ksp = "2.3.13"
 testcontainers = "2.0.5"
 
 [libraries]

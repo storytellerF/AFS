@@ -1,12 +1,15 @@
 name: Publish
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name }}
 
 jobs:
   publish:
+    if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +30,7 @@ jobs:
       - name: Extract version from tag
         id: version
         run: |
-          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          TAG_NAME="${RELEASE_TAG}"
           VERSION="${TAG_NAME#v}"
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Extracted version: $VERSION"

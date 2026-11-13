@@ -154,7 +154,7 @@ ZIP 内部文件可以通过 `file-system-archive` 自动构建嵌套 URI；当�
   -Pversion=<version>
 ```
 
-推送形如 `v1.2.3` 的 tag 时，GitHub Actions 会使用 `CENTRAL_USERNAME`、`CENTRAL_PASSWORD`、`GPG_PRIVATE_KEY` 和 `GPG_PASSPHRASE` secrets 自动发布。
+发布关联形如 `v1.2.3` tag 的 GitHub Release（包括预发布）时，GitHub Actions 会使用 `CENTRAL_USERNAME`、`CENTRAL_PASSWORD`、`GPG_PRIVATE_KEY` 和 `GPG_PASSPHRASE` secrets 自动发布，版本号从 Release 关联的 tag 去掉 `v` 前缀得到。仅推送 tag 不会触发发布。
 
 ## 开发说明
 

@@ -22,7 +22,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.jimfs)
     testImplementation(libs.junit)
-    testImplementation("org.robolectric:robolectric:4.18")
+    testImplementation("org.robolectric:robolectric:4.18.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
